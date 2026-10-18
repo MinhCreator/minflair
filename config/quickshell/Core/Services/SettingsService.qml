@@ -159,7 +159,7 @@ Item {
     Timer {
         id: saveTimer
 
-        interval: 100
+        interval: 500
         repeat: false
         onTriggered: {
             let data = {
