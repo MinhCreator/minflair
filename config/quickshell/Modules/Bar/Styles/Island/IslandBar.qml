@@ -10,7 +10,7 @@ Item {
     required property var notificationService
     property var mainPanelWidget: null
     readonly property string currentPanel: AppState.activeWidget
-    readonly property bool isHostPanel: SettingsService.barIslandMode && (currentPanel === "clock" || currentPanel === "dashboard" || currentPanel === "controlCenter" || currentPanel === "notificationsCenter" || currentPanel === "music" || currentPanel === "launcher" || currentPanel === "clipboard" || currentPanel === "wallpaper" || currentPanel === "screenshot" || currentPanel === "powerMenu")
+    readonly property bool isHostPanel: SettingsService.barIslandMode && (currentPanel === "clock" || currentPanel === "dashboard" || currentPanel === "controlCenter" || currentPanel === "notificationsCenter" || currentPanel === "music" || currentPanel === "systemUsage" || currentPanel === "launcher" || currentPanel === "clipboard" || currentPanel === "wallpaper" || currentPanel === "screenshot" || currentPanel === "powerMenu")
     property string activePanelName: ""
     readonly property string effectivePanel: (AppState.activeWidget !== "" && islandBar.isHostPanel) ? AppState.activeWidget : activePanelName
     property bool isOpen: false
@@ -99,7 +99,7 @@ Item {
                 return "center";
 
         }
-        if (panel === "clock" || panel === "launcher" || panel === "clipboard" || panel === "wallpaper" || panel === "notificationsCenter" || panel === "screenshot" || panel === "powerMenu")
+        if (panel === "clock" || panel === "systemUsage" || panel === "launcher" || panel === "clipboard" || panel === "wallpaper" || panel === "notificationsCenter" || panel === "screenshot" || panel === "powerMenu")
             return "center";
 
         return "";

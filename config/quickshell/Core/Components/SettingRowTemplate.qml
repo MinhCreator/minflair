@@ -10,6 +10,8 @@ Item {
     property string description: ""
     property int labelSize: Constants.sizeSm
     property bool isSubSetting: false
+    // Rows without label/description are just a control container (e.g. inline selectors)
+    readonly property bool isEmptyRow: label === "" && description === ""
     default property alias content: controlContainer.data
 
     implicitHeight: mainLayout.implicitHeight
@@ -21,9 +23,10 @@ Item {
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.top: parent.top
-        spacing: Constants.sizeLg
+        spacing: root.isEmptyRow ? 0 : Constants.sizeLg
 
         ColumnLayout {
+            visible: !root.isEmptyRow
             spacing: Constants.size3Xs
             Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
 

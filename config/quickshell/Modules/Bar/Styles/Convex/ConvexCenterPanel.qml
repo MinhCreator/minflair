@@ -1,6 +1,7 @@
 import QtQuick
 import qs.Modules.Calendar as CalendarModule
 import qs.Modules.Music as MusicModule
+import qs.Modules.SystemUsage as SystemUsageModule
 
 Item {
     id: root
@@ -29,7 +30,7 @@ Item {
 
         anchors.fill: parent
         active: root.isOpen || root.openProgress > 0.001
-        sourceComponent: root.activeContentType === "music" ? musicComp : (root.activeContentType === "calendar" ? calendarComp : null)
+        sourceComponent: root.activeContentType === "music" ? musicComp : (root.activeContentType === "calendar" ? calendarComp : (root.activeContentType === "systemUsage" ? systemUsageComp : null))
     }
 
     Component {
@@ -45,6 +46,15 @@ Item {
         id: calendarComp
 
         CalendarModule.CalendarWidget {
+            widget: root.centerWidget
+        }
+
+    }
+
+    Component {
+        id: systemUsageComp
+
+        SystemUsageModule.SystemUsageContent {
             widget: root.centerWidget
         }
 

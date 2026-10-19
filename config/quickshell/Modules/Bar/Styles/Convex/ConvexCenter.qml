@@ -25,8 +25,8 @@ Item {
     property real notifProgress: (hasActiveNotifications && !notifLayer.isRemovingNotif) ? 1 : 0
     readonly property bool hasActiveOsd: OsdService.isOpen && !hasActiveNotifications && !isOpen
     property real osdProgress: hasActiveOsd ? 1 : 0
-    readonly property bool isCenterExpanded: SettingsService.barConvexMode && (AppState.isWidgetOpen("music") || AppState.isWidgetOpen("calendar"))
-    readonly property string activeContentType: AppState.isWidgetOpen("music") ? "music" : (AppState.isWidgetOpen("calendar") ? "calendar" : "")
+    readonly property bool isCenterExpanded: SettingsService.barConvexMode && (AppState.isWidgetOpen("music") || AppState.isWidgetOpen("calendar") || AppState.isWidgetOpen("systemUsage"))
+    readonly property string activeContentType: AppState.isWidgetOpen("music") ? "music" : (AppState.isWidgetOpen("calendar") ? "calendar" : (AppState.isWidgetOpen("systemUsage") ? "systemUsage" : ""))
     property bool isOpen: false
     property bool isClosing: false
     property real openProgress: 0
@@ -122,6 +122,9 @@ Item {
             if (AppState.isWidgetOpen("calendar"))
                 AppState.closeWidget("calendar");
 
+            if (AppState.isWidgetOpen("systemUsage"))
+                AppState.closeWidget("systemUsage");
+
         }
     }
 
@@ -138,6 +141,14 @@ Item {
             root.openCenter();
         else if (root.isOpen)
             root.closeCenter();
+    }
+
+    // Prevent clicks on the expanded center notch from reaching the global
+    // click-outside handler in ConvexPanels (which would close the widget)
+    MouseArea {
+        anchors.fill: parent
+        acceptedButtons: Qt.AllButtons
+        enabled: root.openProgress > 0.05
     }
 
     // LAYER 1: BAR CONTENT (Clock / Idle Widget)

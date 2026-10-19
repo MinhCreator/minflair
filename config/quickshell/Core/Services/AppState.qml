@@ -35,7 +35,7 @@ Item {
         if (!id)
             return false;
 
-        return id === "dashboard" || id === "controlCenter" || id === "notificationsCenter" || id === "music" || id === "calendar" || id === "clock" || id.startsWith("systemTray_");
+        return id === "dashboard" || id === "controlCenter" || id === "notificationsCenter" || id === "music" || id === "calendar" || id === "systemUsage" || id === "clock" || id.startsWith("systemTray_");
     }
 
     function isFocusWidget(id) {
@@ -72,7 +72,7 @@ Item {
         if (widgetId === "dashboard")
             return "left";
 
-        if (widgetId === "music" || widgetId === "calendar")
+        if (widgetId === "music" || widgetId === "calendar" || widgetId === "systemUsage")
             return "center";
 
         if (widgetId === "controlCenter" || widgetId === "notificationsCenter" || widgetId === "clock" || widgetId.startsWith("systemTray_"))

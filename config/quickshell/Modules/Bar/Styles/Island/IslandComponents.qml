@@ -12,6 +12,7 @@ import qs.Modules.Music as MusicModule
 import qs.Modules.NotificationCenter as NotificationCenterModule
 import qs.Modules.PowerMenu as PowerMenuModule
 import qs.Modules.ScreenCapture as ScreenCaptureModule
+import qs.Modules.SystemUsage as SystemUsageModule
 import qs.Modules.WallpaperSelector as WallpaperModule
 
 Item {
@@ -77,6 +78,8 @@ Item {
             return notificationsCenterComp;
         case "music":
             return musicComp;
+        case "systemUsage":
+            return systemUsageComp;
         case "launcher":
             return launcherComp;
         case "clipboard":
@@ -134,6 +137,15 @@ Item {
         id: musicComp
 
         MusicModule.MiniMusicWidget {
+            widget: root.islandBar
+        }
+
+    }
+
+    Component {
+        id: systemUsageComp
+
+        SystemUsageModule.SystemUsageContent {
             widget: root.islandBar
         }
 

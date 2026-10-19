@@ -28,6 +28,10 @@ Item {
         widgetId: "music"
     }
 
+    WidgetLoader {
+        widgetId: "systemUsage"
+    }
+
     // Application & drawer widgets
     WidgetLoader {
         widgetId: "launcher"
