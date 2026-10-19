@@ -18,7 +18,7 @@ Card {
     cardRadius: Constants.sizeSm
     useBorder: true
     borderColor: Theme.border
-    backgroundColor: Theme.bgSecondary
+    backgroundColor: Theme.bgTertiary
     contentPadding: Constants.sizeLg
     visible: (relRoot.getValue("Provides", "None") !== "None") || (relRoot.getValue("Conflicts With", "None") !== "None") || (relRoot.getValue("Replaces", "None") !== "None")
 

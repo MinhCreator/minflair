@@ -204,7 +204,7 @@ Rectangle {
                             cardRadius: Constants.sizeSm
                             useBorder: true
                             borderColor: Theme.border
-                            backgroundColor: Theme.bgSecondary
+                            backgroundColor: Theme.bgTertiary
                             contentPadding: Constants.sizeLg
 
                             ColumnLayout {

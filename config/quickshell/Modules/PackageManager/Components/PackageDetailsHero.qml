@@ -24,7 +24,7 @@ Card {
     cardRadius: Constants.sizeMd
     useBorder: true
     borderColor: Theme.border
-    backgroundColor: Theme.bgSecondary
+    backgroundColor: Theme.bgTertiary
     contentPadding: Constants.sizeXl
 
     RowLayout {
