@@ -156,6 +156,19 @@ Card {
                         return root.mixColors(Theme.bgSecondary, segmentColor, t);
                     }
 
+                    // When animations are disabled (Game Mode / power-saver) the
+                    // durations are 0, and restarting the sequential animation no
+                    // longer applies the target value, leaving segments stuck on
+                    // stale states. Jump straight to the target in that case so the
+                    // ring always matches the displayed percentage.
+                    function syncLit() {
+                        if (Constants.durationFactor === 0) {
+                            lit = active ? 1 : 0;
+                            return ;
+                        }
+                        litAnimation.restart();
+                    }
+
                     width: radialIndicator.segmentWidth
                     height: segLen
                     radius: radialIndicator.segmentWidth / 2
@@ -163,9 +176,9 @@ Card {
                     y: radialIndicator.size / 2 + midRadius * Math.sin(angleRad) - height / 2
                     rotation: angleDeg + 90
                     color: blendedColor(lit)
-                    onActiveChanged: litAnimation.restart()
+                    onActiveChanged: syncLit()
                     // Animate the initial state on load so the ring sweeps in
-                    Component.onCompleted: litAnimation.restart()
+                    Component.onCompleted: syncLit()
 
                     SequentialAnimation {
                         id: litAnimation
