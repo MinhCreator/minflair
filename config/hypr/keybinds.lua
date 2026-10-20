@@ -139,6 +139,8 @@ hl.bind("CTRL + ALT + M", hl.dsp.exec_cmd("socat - UNIX-CONNECT:/tmp/quickshell_
 hl.bind("CTRL + ALT + N", hl.dsp.exec_cmd("socat - UNIX-CONNECT:/tmp/quickshell_notificationsCenter"))
 -- # Toggle System Usage
 hl.bind("CTRL + ALT + F", hl.dsp.exec_cmd("socat - UNIX-CONNECT:/tmp/quickshell_systemUsage"))
+-- # Toggle Calendar
+hl.bind("CTRL + ALT + C", hl.dsp.exec_cmd("socat - UNIX-CONNECT:/tmp/quickshell_calendar"))
 
 -- ## Quickshell Apps
 

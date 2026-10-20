@@ -3,7 +3,7 @@ import QtQuick.Layouts
 import Quickshell
 import qs.Core
 import qs.Core.Services
-import qs.Modules.Bar.Widgets.Clock as ClockModule
+import qs.Modules.Calendar as CalendarModule
 import qs.Modules.Clipboard as ClipboardModule
 import qs.Modules.ControlCenter as ControlCenterModule
 import qs.Modules.Dashboard as DashboardModule
@@ -68,8 +68,6 @@ Item {
 
     function getComponent(panelName) {
         switch (panelName) {
-        case "clock":
-            return clockComp;
         case "dashboard":
             return dashboardComp;
         case "controlCenter":
@@ -78,6 +76,8 @@ Item {
             return notificationsCenterComp;
         case "music":
             return musicComp;
+        case "calendar":
+            return calendarComp;
         case "systemUsage":
             return systemUsageComp;
         case "launcher":
@@ -93,15 +93,6 @@ Item {
         default:
             return null;
         }
-    }
-
-    Component {
-        id: clockComp
-
-        ClockModule.ClockContent {
-            widget: root.islandBar
-        }
-
     }
 
     Component {
@@ -137,6 +128,15 @@ Item {
         id: musicComp
 
         MusicModule.MiniMusicWidget {
+            widget: root.islandBar
+        }
+
+    }
+
+    Component {
+        id: calendarComp
+
+        CalendarModule.CalendarWidget {
             widget: root.islandBar
         }
 

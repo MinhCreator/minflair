@@ -100,7 +100,7 @@ Item {
                 anchors.fill: parent
                 cursorShape: Qt.PointingHandCursor
                 enabled: root.clickable
-                onClicked: AppState.toggleWidget("clock")
+                onClicked: AppState.toggleWidget("calendar")
             }
 
         }

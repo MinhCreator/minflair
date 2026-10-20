@@ -8,6 +8,7 @@ import qs.Core
 import qs.Core.Components
 import qs.Core.Services
 import qs.Modules.Bar.Widgets.SystemTray
+import qs.Modules.Calendar
 import qs.Modules.Clipboard
 import qs.Modules.ControlCenter
 import qs.Modules.Dashboard
@@ -30,6 +31,7 @@ PanelWindow {
     readonly property bool isNotificationsCenter: AppState.isWidgetOpen("notificationsCenter")
     readonly property bool isDashboard: AppState.isWidgetOpen("dashboard")
     readonly property bool isMusic: AppState.isWidgetOpen("music")
+    readonly property bool isCalendar: AppState.isWidgetOpen("calendar")
     readonly property bool isSystemUsage: AppState.isWidgetOpen("systemUsage")
     readonly property bool isLauncher: AppState.isWidgetOpen("launcher")
     readonly property bool isClipboard: AppState.isWidgetOpen("clipboard")
@@ -37,7 +39,7 @@ PanelWindow {
     readonly property bool isPowerMenu: AppState.isWidgetOpen("powerMenu")
     readonly property bool isScreenshot: AppState.isWidgetOpen("screenshot")
     readonly property bool isTray: (AppState.activeWidget || "").startsWith("systemTray_")
-    readonly property bool hasAnyOpen: isControlCenter || isNotificationsCenter || isDashboard || isMusic || isSystemUsage || isLauncher || isClipboard || isWallpaper || isPowerMenu || isScreenshot || isTray
+    readonly property bool hasAnyOpen: isControlCenter || isNotificationsCenter || isDashboard || isMusic || isCalendar || isSystemUsage || isLauncher || isClipboard || isWallpaper || isPowerMenu || isScreenshot || isTray
     readonly property bool needsFocus: isLauncher || isClipboard || isWallpaper || isPowerMenu || isScreenshot
     readonly property int activeTrayIndex: {
         let targetId = AppState.activeWidget && AppState.activeWidget.startsWith("systemTray_") ? AppState.activeWidget : "";
@@ -313,6 +315,36 @@ PanelWindow {
 
         MiniMusicWidget {
             id: musicContent
+
+            anchors.fill: parent
+            anchors.margins: 12
+            widget: widgetProxy
+        }
+
+    }
+
+    Rectangle {
+        id: calendarContainer
+
+        visible: root.isCalendar
+        enabled: visible
+        anchors.top: parent.top
+        anchors.topMargin: root.widgetOffset
+        anchors.horizontalCenter: parent.horizontalCenter
+        width: Math.min(calendarContent.implicitWidth + 24, root.width - 24)
+        height: Math.min(calendarContent.implicitHeight + 24, root.height - 48)
+        color: Theme.bg
+        radius: 0
+        border.width: 1
+        border.color: Theme.border
+
+        MouseArea {
+            anchors.fill: parent
+            acceptedButtons: Qt.AllButtons
+        }
+
+        CalendarWidget {
+            id: calendarContent
 
             anchors.fill: parent
             anchors.margins: 12

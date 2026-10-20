@@ -29,6 +29,10 @@ Item {
     }
 
     WidgetLoader {
+        widgetId: "calendar"
+    }
+
+    WidgetLoader {
         widgetId: "systemUsage"
     }
 
