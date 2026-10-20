@@ -1,7 +1,9 @@
 import QtQuick
+import QtQuick.Layouts
 import qs.Core
 import qs.Core.Components
 import qs.Core.Services
+import qs.Modules.Bar.Components
 
 IslandBackground {
     id: root
@@ -13,7 +15,13 @@ IslandBackground {
     readonly property bool isTarget: islandBar.activeIslandTarget === "left" && (islandBar.isOpen || islandBar.isRemoving)
     readonly property bool isHovered: leftHover.hovered && !islandBar.isOpen && openProgress === 0
     readonly property bool isTranslated: isHovered || isTarget || openProgress > 0
-    readonly property real idleW: Constants.size3Xl
+    readonly property bool showWorkspaces: SettingsService.islandShowWorkspaces
+    readonly property real logoGlyphW: Constants.sizeXl
+    readonly property real sidePadding: Constants.sizeXs
+    property real workspacesWidth: 0
+    readonly property real targetIdleW: showWorkspaces ? (sidePadding * 2 + logoGlyphW + islandBar.idleSpacing + workspacesWidth) : Constants.size3Xl
+    property real smoothIdleW: targetIdleW
+    readonly property real idleW: smoothIdleW
     readonly property real idleH: Constants.size3Xl
     readonly property real idleR: Constants.sizeLg
     readonly property real panelW: isTarget ? islandComponents.getTargetWidth("dashboard", leftLoader.item, 0) : idleW
@@ -47,16 +55,43 @@ IslandBackground {
         visible: opacity > 0.001
         clip: true
 
-        AnimatedMinflair {
-            anchors.centerIn: parent
-            iconSize: Constants.sizeXl
-        }
+        RowLayout {
+            id: leftIdleRow
 
-        MouseArea {
-            anchors.fill: parent
-            cursorShape: Qt.PointingHandCursor
-            enabled: !islandBar.isOpen
-            onClicked: AppState.toggleWidget("dashboard")
+            anchors.centerIn: parent
+            spacing: islandBar.idleSpacing
+
+            Item {
+                Layout.preferredWidth: root.logoGlyphW
+                Layout.preferredHeight: root.logoGlyphW
+
+                AnimatedMinflair {
+                    anchors.centerIn: parent
+                    iconSize: root.logoGlyphW
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    cursorShape: Qt.PointingHandCursor
+                    enabled: !islandBar.isOpen
+                    onClicked: AppState.toggleWidget("dashboard")
+                }
+
+            }
+
+            Workspaces {
+                id: workspacesWidget
+
+                Layout.alignment: Qt.AlignVCenter
+                compact: true
+                bgColor: "transparent"
+                containerPadding: 0
+                dotSpacing: islandBar.idleSpacing
+                visible: root.showWorkspaces
+                onImplicitWidthChanged: root.workspacesWidth = implicitWidth
+                Component.onCompleted: root.workspacesWidth = implicitWidth
+            }
+
         }
 
     }
@@ -114,6 +149,16 @@ IslandBackground {
                 easing.type: Easing.OutQuint
             }
 
+        }
+
+    }
+
+    Behavior on smoothIdleW {
+        enabled: HyprlandService.enableAnimations
+
+        NumberAnimation {
+            duration: Constants.animNormal
+            easing.type: Easing.OutQuint
         }
 
     }

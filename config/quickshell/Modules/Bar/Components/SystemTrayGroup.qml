@@ -14,9 +14,13 @@ Rectangle {
     property bool forceHide: false
     property bool compact: false
     property bool hasBackground: true
+    property int maxWidth: 240
+    property int itemSize: compact ? 22 : SettingsService.barWidgetHeight
+    property int iconSize: compact ? (Constants.sizeSm - 1) : Constants.sizeSm
+    property int hitPadding: 0
+    property real sideMargin: compact ? 6 : (hasBackground ? Constants.sizeXs : 0)
+    property real itemSpacing: compact ? 4 : (hasBackground ? Constants.sizeSm : Constants.size3Xs)
     property int customHeight: compact ? 22 : SettingsService.barWidgetHeight
-    readonly property real sideMargin: compact ? 6 : (hasBackground ? Constants.sizeXs : 0)
-    readonly property real itemSpacing: compact ? 4 : (hasBackground ? Constants.sizeSm : Constants.size3Xs)
     readonly property bool shouldShow: !forceHide && trayRow.implicitWidth > 0
     readonly property real targetWidth: Math.min(trayRow.implicitWidth + sideMargin * 2, Layout.maximumWidth)
 
@@ -26,7 +30,7 @@ Rectangle {
     height: implicitHeight
     Layout.preferredHeight: customHeight
     Layout.alignment: Qt.AlignVCenter
-    Layout.maximumWidth: 240 + sideMargin * 2
+    Layout.maximumWidth: maxWidth + sideMargin * 2
     Layout.preferredWidth: implicitWidth
     opacity: shouldShow ? 1 : 0
     visible: opacity > 0.001 && implicitWidth > 0.5
@@ -67,8 +71,9 @@ Rectangle {
                 delegate: STray.TrayItem {
                     trayItem: modelData
                     itemIndex: index
-                    customHeight: root.customHeight
-                    iconSize: root.compact ? (Constants.sizeSm - 1) : Constants.sizeSm
+                    customHeight: root.itemSize
+                    iconSize: root.iconSize
+                    hitPadding: root.hitPadding
                     onClicked: (mouse) => {
                         let isRight = (mouse.button === Qt.RightButton);
                         let isMenuClick = isRight || (mouse.button === Qt.LeftButton && modelData.onlyMenu);

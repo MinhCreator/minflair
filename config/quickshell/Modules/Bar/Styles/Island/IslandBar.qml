@@ -10,7 +10,7 @@ Item {
     required property var notificationService
     property var mainPanelWidget: null
     readonly property string currentPanel: AppState.activeWidget
-    readonly property bool isHostPanel: SettingsService.barIslandMode && (currentPanel === "dashboard" || currentPanel === "controlCenter" || currentPanel === "notificationsCenter" || currentPanel === "music" || currentPanel === "calendar" || currentPanel === "systemUsage" || currentPanel === "launcher" || currentPanel === "clipboard" || currentPanel === "wallpaper" || currentPanel === "screenshot" || currentPanel === "powerMenu")
+    readonly property bool isHostPanel: SettingsService.barIslandMode && (currentPanel === "dashboard" || currentPanel === "controlCenter" || currentPanel === "notificationsCenter" || currentPanel === "music" || currentPanel === "calendar" || currentPanel === "systemUsage" || currentPanel === "launcher" || currentPanel === "clipboard" || currentPanel === "wallpaper" || currentPanel === "screenshot" || currentPanel === "powerMenu" || currentPanel.startsWith("systemTray_"))
     property string activePanelName: ""
     readonly property string effectivePanel: (AppState.activeWidget !== "" && islandBar.isHostPanel) ? AppState.activeWidget : activePanelName
     property bool isOpen: false
@@ -79,8 +79,12 @@ Item {
     }
     readonly property real currentHeight: Math.max(leftPill.height + (leftPill.isTranslated ? 4 : 0), Math.max(centerPill.height + (centerPill.isTranslated ? 4 : 0), rightPill.height + (rightPill.isTranslated ? 4 : 0)))
     readonly property real totalIdleWidth: (leftPill && rightPill) ? Math.max(0, (rightPill.x + rightPill.width) - leftPill.x) : 260
+    readonly property int idleSpacing: 5
 
     function getTargetPill(panel) {
+        if (panel.startsWith("systemTray_"))
+            return "center";
+
         if (panel === "dashboard")
             return "left";
 
@@ -288,6 +292,12 @@ Item {
                 closeImmediately();
             else
                 updateContent(AppState.activeWidget);
+        }
+
+        function onIslandShowTrayChanged() {
+            if (!SettingsService.islandShowTray && AppState.activeWidget.startsWith("systemTray_"))
+                AppState.closeWidget(AppState.activeWidget);
+
         }
 
         target: SettingsService

@@ -57,6 +57,24 @@ AppContainer {
             }
         }
 
+        SettingToggle {
+            label: "Show Workspaces"
+            description: "Display interactive workspace indicators in the left island"
+            checked: SettingsService.islandShowWorkspaces
+            onCheckedChanged: {
+                SettingsService.islandShowWorkspaces = checked;
+            }
+        }
+
+        SettingToggle {
+            label: "Show System Tray"
+            description: "Display system tray icons in the right island"
+            checked: SettingsService.islandShowTray
+            onCheckedChanged: {
+                SettingsService.islandShowTray = checked;
+            }
+        }
+
     }
 
     AppGroup {

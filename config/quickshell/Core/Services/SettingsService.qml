@@ -29,6 +29,8 @@ Item {
     property bool barIslandMode: barStyle === "island"
     property bool barConvexMode: barStyle === "convex"
     property string islandRightMode: "auto"
+    property bool islandShowWorkspaces: false
+    property bool islandShowTray: false
     readonly property int barWidgetHeight: 28
     property int numberOfWorkspaces: 10
 
@@ -150,6 +152,16 @@ Item {
             saveSettings();
 
     }
+    onIslandShowWorkspacesChanged: {
+        if (settingsLoaded)
+            saveSettings();
+
+    }
+    onIslandShowTrayChanged: {
+        if (settingsLoaded)
+            saveSettings();
+
+    }
     onNumberOfWorkspacesChanged: {
         if (settingsLoaded)
             saveSettings();
@@ -202,6 +214,8 @@ Item {
                 "cursorSize": settingsService.cursorSize,
                 "barStyle": settingsService.barStyle,
                 "islandRightMode": settingsService.islandRightMode,
+                "islandShowWorkspaces": settingsService.islandShowWorkspaces,
+                "islandShowTray": settingsService.islandShowTray,
                 "numberOfWorkspaces": settingsService.numberOfWorkspaces
             };
             settingsSaver.running = false;
@@ -349,6 +363,12 @@ cp ~/.cache/quickshell/settings_prefs.json /var/tmp/sddm-theme/settings_prefs.js
                         }
                         if (prefs.islandRightMode !== undefined)
                             settingsService.islandRightMode = prefs.islandRightMode;
+
+                        if (prefs.islandShowWorkspaces !== undefined)
+                            settingsService.islandShowWorkspaces = prefs.islandShowWorkspaces;
+
+                        if (prefs.islandShowTray !== undefined)
+                            settingsService.islandShowTray = prefs.islandShowTray;
 
                         if (prefs.numberOfWorkspaces !== undefined)
                             settingsService.numberOfWorkspaces = prefs.numberOfWorkspaces;

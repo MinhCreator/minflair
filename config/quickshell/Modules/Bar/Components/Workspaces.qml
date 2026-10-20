@@ -13,7 +13,8 @@ Item {
     property color bgColor: Theme.bgSecondary
     property bool compact: false
     property int customHeight: compact ? 20 : SettingsService.barWidgetHeight
-    readonly property real containerPadding: compact ? 8 : 10
+    property real containerPadding: compact ? 8 : 10
+    property int dotSpacing: compact ? 5 : 6
     readonly property int dotHeight: compact ? 6 : 8
     readonly property int activePillWidth: compact ? 18 : 24
     readonly property int activeWsId: Hyprland.focusedWorkspace ? Hyprland.focusedWorkspace.id : 1
@@ -99,7 +100,7 @@ Item {
         id: hLayout
 
         anchors.centerIn: parent
-        spacing: root.compact ? 5 : 6
+        spacing: root.dotSpacing
 
         Repeater {
             model: SettingsService.numberOfWorkspaces

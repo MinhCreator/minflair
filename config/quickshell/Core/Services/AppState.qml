@@ -1,5 +1,6 @@
 import QtQuick
 import Quickshell
+import Quickshell.Services.SystemTray
 import qs.Core
 import qs.Core.Services
 pragma Singleton
@@ -27,6 +28,14 @@ Item {
     property real activeNotificationHeight: 0
     readonly property var focusWidgets: ["launcher", "clipboard", "wallpaper", "screenshot", "powerMenu"]
     readonly property var standaloneWindows: ["minflair_settings", "minflair_keybinds", "packagemanager"]
+    readonly property int activeTrayIndex: {
+        if (!activeWidget || !activeWidget.startsWith("systemTray_"))
+            return -1;
+
+        const idx = parseInt(activeWidget.split("_")[1]);
+        return isNaN(idx) ? -1 : idx;
+    }
+    readonly property var resolvedTrayItem: activeTrayItem || trayItemAt(activeTrayIndex)
 
     signal toggleWidget(string widgetId)
     signal openWidget(string widgetId)
@@ -48,6 +57,43 @@ Item {
 
     function isStandaloneWindow(id) {
         return standaloneWindows.indexOf(id) !== -1;
+    }
+
+    function trayItemAt(index) {
+        if (index < 0)
+            return null;
+
+        const items = SystemTray.items;
+        if (!items)
+            return null;
+
+        if (items.values && index < items.values.length)
+            return items.values[index];
+
+        if (index < items.length)
+            return items[index];
+
+        return null;
+    }
+
+    function trayTitle(item) {
+        if (!item)
+            return "Menu";
+
+        const title = item.title ? item.title.toString().trim() : "";
+        if (title !== "")
+            return title;
+
+        const tooltip = item.tooltipTitle ? item.tooltipTitle.toString().trim() : (item.toolTipTitle ? item.toolTipTitle.toString().trim() : "");
+        if (tooltip !== "")
+            return tooltip;
+
+        const id = item.id ? item.id.toString().trim() : "";
+        if (id !== "" && !id.startsWith("org.kde.StatusNotifier")) {
+            const clean = id.replace(/_status_icon_\d+$/i, "").replace(/[-_]/g, " ");
+            return clean.charAt(0).toUpperCase() + clean.slice(1);
+        }
+        return "Menu";
     }
 
     function isWidgetOpen(id) {

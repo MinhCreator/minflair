@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import Quickshell
 import qs.Core
 import qs.Core.Services
+import qs.Modules.Bar.Widgets.SystemTray
 import qs.Modules.Calendar as CalendarModule
 import qs.Modules.Clipboard as ClipboardModule
 import qs.Modules.ControlCenter as ControlCenterModule
@@ -67,6 +68,9 @@ Item {
     }
 
     function getComponent(panelName) {
+        if (panelName.startsWith("systemTray_"))
+            return trayComp;
+
         switch (panelName) {
         case "dashboard":
             return dashboardComp;
@@ -192,6 +196,40 @@ Item {
 
         PowerMenuModule.PowerMenuContent {
             widget: root.islandBar
+        }
+
+    }
+
+    Component {
+        id: trayComp
+
+        Item {
+            id: trayWrap
+
+            readonly property int maxW: 340
+            readonly property int maxH: 380
+            property real menuImplicitW: 0
+            property real menuImplicitH: 0
+
+            implicitWidth: Math.max(220, Math.min(maxW, menuImplicitW))
+            implicitHeight: Math.max(120, Math.min(maxH, menuImplicitH))
+
+            TrayMenu {
+                id: trayMenu
+
+                anchors.fill: parent
+                menuHandle: AppState.resolvedTrayItem ? AppState.resolvedTrayItem.menu : null
+                title: AppState.trayTitle(AppState.resolvedTrayItem)
+                onBackRequested: AppState.closeWidget(AppState.activeWidget)
+                onCloseRequested: AppState.closeWidget(AppState.activeWidget)
+                onImplicitWidthChanged: trayWrap.menuImplicitW = implicitWidth
+                onImplicitHeightChanged: trayWrap.menuImplicitH = implicitHeight
+                Component.onCompleted: {
+                    trayWrap.menuImplicitW = implicitWidth;
+                    trayWrap.menuImplicitH = implicitHeight;
+                }
+            }
+
         }
 
     }

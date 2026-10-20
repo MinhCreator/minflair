@@ -1,7 +1,9 @@
 import QtQuick
+import QtQuick.Layouts
 import qs.Core
 import qs.Core.Components
 import qs.Core.Services
+import qs.Modules.Bar.Components
 
 IslandBackground {
     id: root
@@ -17,7 +19,22 @@ IslandBackground {
     readonly property bool hasPlayingMedia: MprisService.activePlayer !== null && (((MprisService.activePlayer.trackTitle || "").trim() !== "") || ((MprisService.activePlayer.trackArtist || "").trim() !== ""))
     readonly property bool showMedia: islandBar ? islandBar.showMediaOnRight : ((SettingsService.islandRightMode === "music") || (SettingsService.islandRightMode === "auto" && hasPlayingMedia))
     readonly property bool isMusicActive: showMedia && MprisService.isPlaying
-    readonly property real targetIdleW: isMusicActive ? Constants.size5Xl + 10 : Constants.size3Xl
+    property real trayWidth: 0
+    property bool trayAvailable: false
+    readonly property bool showTray: SettingsService.islandShowTray && trayAvailable
+    // Artwork 20 + gap 6 + cava bars 14 (no internal padding, leftInset 0)
+    readonly property real playingMediaW: Constants.sizeXl + Constants.sizeSm / 2 + 14
+    readonly property real mediaW: {
+        if (isMusicActive)
+            return showTray ? playingMediaW : Constants.size5Xl + 10;
+
+        if (showTray && !showMedia)
+            return Constants.sizeLg;
+
+        return Constants.size3Xl;
+    }
+    readonly property real sidePadding: Constants.sizeXs
+    readonly property real targetIdleW: showTray ? (sidePadding * 2 + mediaW + islandBar.idleSpacing + trayWidth) : mediaW
     property real smoothIdleW: targetIdleW
     readonly property real idleW: smoothIdleW
     readonly property real idleH: Constants.size3Xl
@@ -47,11 +64,54 @@ IslandBackground {
         enabled: root.openProgress > 0.05
     }
 
-    IslandMediaArt {
+    Item {
         anchors.fill: parent
         opacity: Math.min(1, Math.max(0, 1 - root.openProgress / 0.15))
         visible: opacity > 0.001
-        clickable: !islandBar.isOpen
+        clip: true
+
+        RowLayout {
+            id: rightIdleRow
+
+            anchors.centerIn: parent
+            spacing: islandBar.idleSpacing
+
+            IslandMediaArt {
+                id: mediaArt
+
+                Layout.alignment: Qt.AlignVCenter
+                implicitWidth: root.mediaW
+                implicitHeight: root.idleH
+                leftInset: (root.isMusicActive && root.showTray) ? 0 : (Constants.sizeSm / 2)
+                clickable: !islandBar.isOpen
+            }
+
+            SystemTrayGroup {
+                id: trayGroup
+
+                Layout.alignment: Qt.AlignVCenter
+                compact: true
+                hasBackground: false
+                maxWidth: 88
+                itemSize: Constants.sizeSm
+                iconSize: Constants.sizeSm
+                hitPadding: Constants.size3Xs
+                itemSpacing: islandBar.idleSpacing
+                sideMargin: 0
+                visible: SettingsService.islandShowTray
+                onImplicitWidthChanged: {
+                    root.trayWidth = implicitWidth;
+                    root.trayAvailable = shouldShow;
+                }
+                onShouldShowChanged: root.trayAvailable = shouldShow
+                Component.onCompleted: {
+                    root.trayWidth = implicitWidth;
+                    root.trayAvailable = shouldShow;
+                }
+            }
+
+        }
+
     }
 
     Item {

@@ -14,6 +14,7 @@ Rectangle {
     property int itemIndex: -1
     property int customHeight: SettingsService.barWidgetHeight
     property int iconSize: Constants.sizeSm
+    property int hitPadding: 0
     readonly property string widgetId: itemIndex >= 0 ? ("systemTray_" + itemIndex) : ""
     readonly property bool isActive: (widgetId !== "" && AppState.isWidgetOpen(widgetId)) || (AppState.activeTrayItem === trayItem && AppState.activeWidget.startsWith("systemTray_"))
     property bool isHovered: mouseArea.containsMouse
@@ -115,6 +116,7 @@ Rectangle {
 
         z: 10
         anchors.fill: parent
+        anchors.margins: -itemRoot.hitPadding
         hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
         acceptedButtons: Qt.LeftButton | Qt.RightButton
