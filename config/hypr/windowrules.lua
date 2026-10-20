@@ -46,6 +46,7 @@ hl.window_rule({ match = { title = "^Select a File|Choose wallpaper|Open Folder|
 hl.window_rule({ match = { title = "^Minflair Settings$" }, float = true, size = "1200 750", center = true })
 hl.window_rule({ match = { title = "^Minflair Keybinds Cheat Sheet$" }, float = true, size = "1100 700", center = true })
 hl.window_rule({ match = { title = "^Minflair Package Manager" }, float = true, size = "1300 800", center = true })
+hl.window_rule({ match = { title = "^Minflair Pomodoro" }, float = true, size = "1100 700", center = true })
 
 hl.layer_rule({
 	match = { namespace = "quickshell" },

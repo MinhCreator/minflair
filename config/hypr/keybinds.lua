@@ -150,6 +150,8 @@ hl.bind(mainMod .. " + S", hl.dsp.exec_cmd("socat - UNIX-CONNECT:/tmp/quickshell
 hl.bind("CTRL + ALT + P", hl.dsp.exec_cmd("socat - UNIX-CONNECT:/tmp/quickshell_packagemanager"))
 -- # Toggle Keybinds Cheat Sheet
 hl.bind(mainMod .. " + K", hl.dsp.exec_cmd("socat - UNIX-CONNECT:/tmp/quickshell_minflair_keybinds"))
+-- # Toggle Pomodoro
+hl.bind("CTRL + ALT + T", hl.dsp.exec_cmd("socat - UNIX-CONNECT:/tmp/quickshell_pomodoro"))
 
 -- ## Window Groups
 
