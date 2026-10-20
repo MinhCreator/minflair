@@ -83,6 +83,8 @@ PanelWindow {
         }
         return "Menu";
     }
+    property var _pendingFocusItem: null
+    property int _focusAttempts: 0
 
     function getTrayItem(index) {
         if (index < 0)
@@ -98,6 +100,26 @@ PanelWindow {
         return null;
     }
 
+    function resolveFocusTarget(item) {
+        if (!item)
+            return null;
+
+        if (item.textField)
+            return item.textField;
+
+        return item;
+    }
+
+    function scheduleContentFocus(item) {
+        let target = resolveFocusTarget(item);
+        if (!target)
+            return ;
+
+        _pendingFocusItem = target;
+        _focusAttempts = 0;
+        focusTimer.restart();
+    }
+
     WlrLayershell.layer: WlrLayer.Top
     WlrLayershell.exclusionMode: ExclusionMode.Ignore
     WlrLayershell.keyboardFocus: needsFocus ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
@@ -109,9 +131,7 @@ PanelWindow {
             if (launcherContent && typeof launcherContent.resetLauncher === "function")
                 launcherContent.resetLauncher();
 
-            if (launcherContent && launcherContent.initialFocusItem)
-                launcherContent.initialFocusItem.forceActiveFocus();
-
+            scheduleContentFocus(launcherContent ? launcherContent.initialFocusItem : null);
         }
     }
     onIsClipboardChanged: {
@@ -119,9 +139,7 @@ PanelWindow {
             if (clipboardContent && typeof clipboardContent.resetClipboard === "function")
                 clipboardContent.resetClipboard();
 
-            if (clipboardContent && clipboardContent.initialFocusItem)
-                clipboardContent.initialFocusItem.forceActiveFocus();
-
+            scheduleContentFocus(clipboardContent ? clipboardContent.initialFocusItem : null);
         }
     }
     onIsWallpaperChanged: {
@@ -129,9 +147,7 @@ PanelWindow {
             if (wallpaperContent && typeof wallpaperContent.resetWallpaperSelector === "function")
                 wallpaperContent.resetWallpaperSelector();
 
-            if (wallpaperContent && wallpaperContent.initialFocusItem)
-                wallpaperContent.initialFocusItem.forceActiveFocus();
-
+            scheduleContentFocus(wallpaperContent ? wallpaperContent.initialFocusItem : null);
         }
     }
     onIsPowerMenuChanged: {
@@ -139,11 +155,7 @@ PanelWindow {
             if (powerMenuContent && typeof powerMenuContent.resetPowerMenu === "function")
                 powerMenuContent.resetPowerMenu();
 
-            Qt.callLater(() => {
-                if (powerMenuContent && powerMenuContent.initialFocusItem)
-                    powerMenuContent.initialFocusItem.forceActiveFocus();
-
-            });
+            scheduleContentFocus(powerMenuContent ? powerMenuContent.initialFocusItem : null);
         }
     }
     onIsScreenshotChanged: {
@@ -151,11 +163,13 @@ PanelWindow {
             if (screenshotContent && typeof screenshotContent.resetScreenCapture === "function")
                 screenshotContent.resetScreenCapture();
 
-            Qt.callLater(() => {
-                if (screenshotContent && screenshotContent.initialFocusItem)
-                    screenshotContent.initialFocusItem.forceActiveFocus();
-
-            });
+            scheduleContentFocus(screenshotContent ? screenshotContent.initialFocusItem : null);
+        }
+    }
+    onVisibleChanged: {
+        if (visible && needsFocus && _pendingFocusItem) {
+            _focusAttempts = 0;
+            focusTimer.restart();
         }
     }
 
@@ -195,6 +209,31 @@ PanelWindow {
         }
         onClicked: {
             AppState.closeAllWidgets();
+        }
+    }
+
+    // The layer-shell surface only gets keyboard focus once it is mapped and
+    // focusable, so focus must be re-applied after the window becomes active
+    // (same approach used by OverlayWindow's initialFocusTimer).
+    Timer {
+        id: focusTimer
+
+        interval: 30
+        repeat: true
+        onTriggered: {
+            if (!root.needsFocus || !root.visible || !root._pendingFocusItem) {
+                stop();
+                return ;
+            }
+            if (root._pendingFocusItem.activeFocus) {
+                stop();
+                return ;
+            }
+            root._pendingFocusItem.forceActiveFocus();
+            root._focusAttempts++;
+            if (root._focusAttempts >= 10)
+                stop();
+
         }
     }
 
@@ -520,6 +559,10 @@ PanelWindow {
         radius: 0
         border.width: 1
         border.color: Theme.border
+        Keys.onEscapePressed: function(event) {
+            AppState.closeAllWidgets();
+            event.accepted = true;
+        }
 
         MouseArea {
             anchors.fill: parent
