@@ -172,6 +172,7 @@ Item {
         currentIslandTarget = target;
         activePanelName = newPanel;
         isRemoving = false;
+        AppState.islandClosing = false;
         isOpen = true;
         AppState.isIslandOpen = true;
         leftPill.openProgress = (target === "left") ? 1 : 0;
@@ -184,6 +185,7 @@ Item {
             return ;
 
         isRemoving = true;
+        AppState.islandClosing = true;
         isOpen = false;
         leftPill.openProgress = 0;
         centerPill.openProgress = 0;
@@ -202,6 +204,7 @@ Item {
     function finishClosing() {
         if (isRemoving) {
             isRemoving = false;
+            AppState.islandClosing = false;
             currentIslandTarget = "";
             activePanelName = "";
             AppState.isIslandOpen = false;
@@ -216,6 +219,7 @@ Item {
 
     function closeImmediately() {
         isRemoving = false;
+        AppState.islandClosing = false;
         isOpen = false;
         currentIslandTarget = "";
         leftPill.openProgress = 0;

@@ -19,6 +19,7 @@ Item {
     readonly property bool shouldLoadWindow: enabled && !isIslandHandled && !isConvexHandled && !isGamingHandled
     readonly property bool _isActive: shouldLoadWindow && (exclusive ? AppState.isWidgetOpen(widgetId) : _isInternalActive)
     property bool _isClosing: false
+    property bool _pendingOpen: false
     property alias item: loader.item
 
     on_IsActiveChanged: {
@@ -60,15 +61,46 @@ Item {
 
     Connections {
         function onToggleWidget(id) {
-            if (root.widgetId !== "" && id === root.widgetId)
-                root._isInternalActive = !root._isInternalActive;
+            if (root.widgetId === "" || id !== root.widgetId)
+                return ;
 
+            if (root._pendingOpen) {
+                root._pendingOpen = false;
+                return ;
+            }
+            if (root._isInternalActive) {
+                root._isInternalActive = false;
+                return ;
+            }
+            if (AppState.islandClosing) {
+                root._pendingOpen = true;
+                return ;
+            }
+            root._isInternalActive = true;
         }
 
         function onOpenWidget(id) {
-            if (root.widgetId !== "" && id === root.widgetId)
-                root._isInternalActive = true;
+            // Loading a heavy QML window while the island collapses makes
+            // the close animation stutter. Open it once the animation ends.
 
+            if (root.widgetId === "" || id !== root.widgetId)
+                return ;
+
+            if (root._isInternalActive)
+                return ;
+
+            if (AppState.islandClosing)
+                root._pendingOpen = true;
+            else
+                root._isInternalActive = true;
+        }
+
+        function onIslandClosingChanged() {
+            if (AppState.islandClosing || !root._pendingOpen)
+                return ;
+
+            root._pendingOpen = false;
+            root._isInternalActive = true;
         }
 
         target: AppState

@@ -19,6 +19,7 @@ Item {
     property alias barIslandWidth: appState.islandWidth
     property alias barIslandHeight: appState.islandHeight
     property bool isIslandOpen: false
+    property bool islandClosing: false
     property bool isConvexOpen: false
     property real barConvexWidth: 220
     property real barConvexHeight: Constants.size4Xl

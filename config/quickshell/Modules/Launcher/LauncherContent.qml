@@ -146,14 +146,17 @@ Item {
         if (terminal)
             command = ["kitty", "-e"].concat(command);
 
-        appLauncher.running = false;
-        appLauncher.command = command;
-        appLauncher.startDetached();
+        // Close the launcher first: the island (and the app window loading)
+        // share the same QML thread, so starting the app first makes the
+        // closing animation stutter.
         AppState.closeAllWidgets();
         if (root.widget && root.widget.close !== undefined)
             root.widget.close();
         else if (root.widget && root.widget.isOpen !== undefined)
             root.widget.isOpen = false;
+        appLauncher.running = false;
+        appLauncher.command = command;
+        appLauncher.startDetached();
     }
 
     function resetLauncher() {
