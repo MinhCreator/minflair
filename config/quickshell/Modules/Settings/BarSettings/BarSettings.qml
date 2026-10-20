@@ -38,9 +38,19 @@ AppContainer {
         icon: "widgets"
         visible: SettingsService.barIslandMode
 
+        SettingToggle {
+            label: "Single Island"
+            description: "Show only the center pill with the star, clock and music cava. Workspaces and tray are hidden."
+            checked: SettingsService.islandSinglePill
+            onCheckedChanged: {
+                SettingsService.islandSinglePill = checked;
+            }
+        }
+
         SettingSegmented {
             label: "Right Circular Island"
             description: "Choose what to display in the right circular island (Music cover or Control Center)"
+            visible: !SettingsService.islandSinglePill
             model: [{
                 "text": "Auto (Music or Tune)",
                 "value": "auto"
@@ -60,6 +70,7 @@ AppContainer {
         SettingToggle {
             label: "Show Workspaces"
             description: "Display interactive workspace indicators in the left island"
+            visible: !SettingsService.islandSinglePill
             checked: SettingsService.islandShowWorkspaces
             onCheckedChanged: {
                 SettingsService.islandShowWorkspaces = checked;
@@ -69,6 +80,7 @@ AppContainer {
         SettingToggle {
             label: "Show System Tray"
             description: "Display system tray icons in the right island"
+            visible: !SettingsService.islandSinglePill
             checked: SettingsService.islandShowTray
             onCheckedChanged: {
                 SettingsService.islandShowTray = checked;

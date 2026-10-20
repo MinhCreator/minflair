@@ -36,8 +36,9 @@ Item {
     // Bar Style Interface
     readonly property real leftWidth: 0
     readonly property real rightWidth: 0
-    readonly property real centerX: leftPill ? leftPill.x : 0
-    readonly property real centerWidth: (leftPill && rightPill) ? Math.max(0, (rightPill.x + rightPill.width) - leftPill.x) : width
+    readonly property bool singlePill: SettingsService.islandSinglePill
+    readonly property real centerX: singlePill ? centerPill.x : (leftPill ? leftPill.x : 0)
+    readonly property real centerWidth: singlePill ? centerPill.width : ((leftPill && rightPill) ? Math.max(0, (rightPill.x + rightPill.width) - leftPill.x) : width)
     readonly property bool isExpanded: false
     readonly property string activeBarStyle: "island"
     // Geometry exposed for popupSurface mask
@@ -78,10 +79,13 @@ Item {
         return centerPill.height;
     }
     readonly property real currentHeight: Math.max(leftPill.height + (leftPill.isTranslated ? 4 : 0), Math.max(centerPill.height + (centerPill.isTranslated ? 4 : 0), rightPill.height + (rightPill.isTranslated ? 4 : 0)))
-    readonly property real totalIdleWidth: (leftPill && rightPill) ? Math.max(0, (rightPill.x + rightPill.width) - leftPill.x) : 260
+    readonly property real totalIdleWidth: singlePill ? centerPill.width : ((leftPill && rightPill) ? Math.max(0, (rightPill.x + rightPill.width) - leftPill.x) : 260)
     readonly property int idleSpacing: 5
 
     function getTargetPill(panel) {
+        if (singlePill)
+            return panel === "" ? "" : "center";
+
         if (panel.startsWith("systemTray_"))
             return "center";
 
@@ -300,6 +304,13 @@ Item {
 
         }
 
+        function onIslandSinglePillChanged() {
+            if (islandBar.isOpen || islandBar.isRemoving)
+                islandBar.closeImmediately();
+
+            islandBar.syncDimensions();
+        }
+
         target: SettingsService
     }
 
@@ -318,6 +329,7 @@ Item {
             islandBar: islandBar
             islandComponents: islandComponents
             centerPill: centerPill
+            visible: !islandBar.singlePill
         }
 
         IslandCenterPill {
@@ -336,6 +348,7 @@ Item {
             islandComponents: islandComponents
             islandContainer: islandContainer
             centerPill: centerPill
+            visible: !islandBar.singlePill
         }
 
     }

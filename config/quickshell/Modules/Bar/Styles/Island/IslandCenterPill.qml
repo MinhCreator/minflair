@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import qs.Core
 import qs.Core.Components
 import qs.Core.Services
+import qs.Modules.Bar.Components
 
 IslandBackground {
     id: root
@@ -28,12 +29,14 @@ IslandBackground {
         return 175;
     }
     property real osdW: dynamicOsdW
+    readonly property bool singlePill: islandBar.singlePill
+    property real idleRowWidth: 0
     readonly property bool isHovered: centerHover.hovered && !islandBar.isOpen && openProgress === 0 && !hasActiveNotifications && !hasActiveOsd
     readonly property bool isTranslated: isHovered || isTarget || openProgress > 0 || (hasActiveNotifications && notifProgress > 0) || (hasActiveOsd && osdProgress > 0)
     readonly property real notifW: notifLayer.notifW
     readonly property real notifH: notifLayer.notifH
     readonly property real notifR: Constants.sizeXl
-    readonly property real idleW: clockContent.implicitWidth + 20
+    readonly property real idleW: singlePill ? (idleRowWidth + 20) : (clockContent.implicitWidth + 20)
     readonly property real idleH: Constants.size3Xl
     readonly property real idleR: Constants.sizeLg
     property real smoothIdleW: idleW
@@ -77,13 +80,37 @@ IslandBackground {
         enabled: root.openProgress > 0.05
     }
 
-    IslandClock {
-        id: clockContent
+    RowLayout {
+        id: idleRow
 
         anchors.centerIn: parent
+        spacing: root.singlePill ? Constants.sizeXs : islandBar.idleSpacing
         opacity: Math.min(1, Math.max(0, 1 - Math.max(root.openProgress, Math.max(root.notifProgress, root.osdProgress)) / 0.15))
         visible: opacity > 0.001
-        clickable: !islandBar.isOpen && !root.hasActiveNotifications && !root.hasActiveOsd
+        onImplicitWidthChanged: root.idleRowWidth = implicitWidth
+        Component.onCompleted: root.idleRowWidth = implicitWidth
+
+        Loader {
+            active: root.singlePill
+            visible: active
+            Layout.alignment: Qt.AlignVCenter
+            sourceComponent: starComponent
+        }
+
+        IslandClock {
+            id: clockContent
+
+            Layout.alignment: Qt.AlignVCenter
+            clickable: !islandBar.isOpen && !root.hasActiveNotifications && !root.hasActiveOsd
+        }
+
+        Loader {
+            active: root.singlePill && MprisService.isPlaying
+            visible: active
+            Layout.alignment: Qt.AlignVCenter
+            sourceComponent: cavaComponent
+        }
+
     }
 
     IslandNotifLayer {
@@ -242,6 +269,60 @@ IslandBackground {
                     easing.type: Easing.OutCubic
                 }
 
+            }
+
+        }
+
+    }
+
+    Component {
+        id: starComponent
+
+        Item {
+            implicitWidth: Constants.sizeXl
+            implicitHeight: Constants.sizeXl
+
+            AnimatedMinflair {
+                anchors.centerIn: parent
+                iconSize: Constants.sizeXl
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                cursorShape: Qt.PointingHandCursor
+                enabled: !islandBar.isOpen
+                onClicked: AppState.toggleWidget("dashboard")
+            }
+
+        }
+
+    }
+
+    Component {
+        id: cavaComponent
+
+        Item {
+            implicitWidth: Constants.sizeSm + Constants.size3Xs
+            implicitHeight: Constants.sizeLg
+
+            MiniCavaBars {
+                anchors.centerIn: parent
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                cursorShape: Qt.PointingHandCursor
+                acceptedButtons: Qt.LeftButton | Qt.RightButton
+                enabled: !islandBar.isOpen
+                onClicked: (mouse) => {
+                    if (mouse.button === Qt.RightButton) {
+                        if (MprisService.activePlayer)
+                            MprisService.activePlayer.togglePlaying();
+
+                    } else {
+                        AppState.toggleWidget("music");
+                    }
+                }
             }
 
         }

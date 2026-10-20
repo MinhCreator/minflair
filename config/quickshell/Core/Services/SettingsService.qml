@@ -31,6 +31,7 @@ Item {
     property string islandRightMode: "auto"
     property bool islandShowWorkspaces: false
     property bool islandShowTray: false
+    property bool islandSinglePill: false
     readonly property int barWidgetHeight: 28
     property int numberOfWorkspaces: 10
 
@@ -162,6 +163,11 @@ Item {
             saveSettings();
 
     }
+    onIslandSinglePillChanged: {
+        if (settingsLoaded)
+            saveSettings();
+
+    }
     onNumberOfWorkspacesChanged: {
         if (settingsLoaded)
             saveSettings();
@@ -216,6 +222,7 @@ Item {
                 "islandRightMode": settingsService.islandRightMode,
                 "islandShowWorkspaces": settingsService.islandShowWorkspaces,
                 "islandShowTray": settingsService.islandShowTray,
+                "islandSinglePill": settingsService.islandSinglePill,
                 "numberOfWorkspaces": settingsService.numberOfWorkspaces
             };
             settingsSaver.running = false;
@@ -369,6 +376,9 @@ cp ~/.cache/quickshell/settings_prefs.json /var/tmp/sddm-theme/settings_prefs.js
 
                         if (prefs.islandShowTray !== undefined)
                             settingsService.islandShowTray = prefs.islandShowTray;
+
+                        if (prefs.islandSinglePill !== undefined)
+                            settingsService.islandSinglePill = prefs.islandSinglePill;
 
                         if (prefs.numberOfWorkspaces !== undefined)
                             settingsService.numberOfWorkspaces = prefs.numberOfWorkspaces;
