@@ -5,6 +5,7 @@ import qs.Modules.KeybindsCheatSheet
 import qs.Modules.Launcher
 import qs.Modules.LockScreen
 import qs.Modules.PackageManager
+import qs.Modules.Pomodoro
 import qs.Modules.Settings
 import qs.Modules.WallpaperSelector
 
@@ -109,6 +110,18 @@ Item {
 
         sourceComponent: Component {
             PackageManager {
+            }
+
+        }
+
+    }
+
+    WidgetLoader {
+        widgetId: "pomodoro"
+        exclusive: false
+
+        sourceComponent: Component {
+            Pomodoro {
             }
 
         }

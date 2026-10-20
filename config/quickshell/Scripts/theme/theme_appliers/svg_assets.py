@@ -18,6 +18,7 @@ def apply(home, colors):
             "settings-icon.svg",
             "keybinds-icon.svg",
             "packagemanager-icon.svg",
+            "pomodoro-icon.svg",
         ]:
             svg_path = os.path.join(assets_dir, svg_file)
             if not os.path.exists(svg_path):
