@@ -24,7 +24,7 @@ PanelWindow {
     id: root
 
     required property var notificationService
-    readonly property int barHeight: Constants.size3Xl + 2
+    readonly property int barHeight: Constants.gamingBarHeight
     readonly property int widgetOffset: barHeight + 8
     readonly property int edgeSpacing: 8
     readonly property bool isControlCenter: AppState.isWidgetOpen("controlCenter")

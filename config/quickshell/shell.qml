@@ -89,10 +89,10 @@ ShellRoot {
         id: gamingBarSurface
 
         WlrLayershell.layer: WlrLayer.Top
-        WlrLayershell.exclusiveZone: Constants.size3Xl + 2
+        WlrLayershell.exclusiveZone: Constants.gamingBarHeight
         color: Theme.bg
         focusable: false
-        implicitHeight: Constants.size3Xl + 2
+        implicitHeight: Constants.gamingBarHeight
         visible: SettingsService.settingsLoaded && root.isGaming
 
         anchors {

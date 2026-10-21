@@ -15,6 +15,9 @@ QtObject {
     property int size3Xl: 32
     property int size4Xl: 40
     property int size5Xl: 48
+    // Gaming bar surface height. The surface, its exclusive zone and the overlay
+    // must always use the same value, so it lives here as a single source of truth.
+    property int gamingBarHeight: size3Xl + 2
     readonly property real durationFactor: (HyprlandService.enableAnimations && !DisplayProfileService.gameModeActive && SystemInfoService.powerProfile !== "power-saver") ? (1 / Math.max(0.1, HyprlandService.animationSpeedFactor)) : 0
     property int animUltraFast: Math.round(100 * durationFactor)
     property int animFast: Math.round(150 * durationFactor)

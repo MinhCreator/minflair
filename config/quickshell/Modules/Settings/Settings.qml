@@ -46,7 +46,7 @@ AppWindow {
         },
         "4": {
             "title": "Integrations & Apps",
-            "subtitle": "Weather service, GitHub status, notifications, and launcher",
+            "subtitle": "Default applications, quotes, and GitHub status",
             "category": "MANAGEMENT"
         },
         "5": {
