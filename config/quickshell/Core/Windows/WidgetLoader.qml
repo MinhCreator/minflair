@@ -80,9 +80,6 @@ Item {
         }
 
         function onOpenWidget(id) {
-            // Loading a heavy QML window while the island collapses makes
-            // the close animation stutter. Open it once the animation ends.
-
             if (root.widgetId === "" || id !== root.widgetId)
                 return ;
 
@@ -90,6 +87,8 @@ Item {
                 return ;
 
             if (AppState.islandClosing)
+                // Loading a heavy QML window while the island collapses makes
+                // the close animation stutter. Open it once the animation ends.
                 root._pendingOpen = true;
             else
                 root._isInternalActive = true;

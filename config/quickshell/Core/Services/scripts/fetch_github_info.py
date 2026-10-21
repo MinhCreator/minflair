@@ -9,6 +9,28 @@ import urllib.error
 import urllib.parse
 import urllib.request
 
+TOKEN_ENV_VAR = "MINFLAIR_GITHUB_TOKEN"
+
+
+def sanitize_token(value):
+    """Strip whitespace and control characters from a credential."""
+    if not value:
+        return ""
+    return "".join(c for c in value if c.isprintable() and not c.isspace()).strip()
+
+
+def resolve_token(argv):
+    """Read the token from the environment first.
+
+    Passing credentials as command line arguments exposes them to every local
+    user through /proc/<pid>/cmdline, so the environment is the preferred
+    transport. The argv form is only accepted as a deprecated fallback.
+    """
+    token = sanitize_token(os.environ.get(TOKEN_ENV_VAR, ""))
+    if token:
+        return token
+    return sanitize_token(argv[2]) if len(argv) > 2 else ""
+
 
 def fetch_json(url, token=None):
     req = urllib.request.Request(url)
@@ -44,7 +66,7 @@ def main():
         return
 
     user = sys.argv[1]
-    token = sys.argv[2] if len(sys.argv) > 2 else None
+    token = resolve_token(sys.argv) or None
 
     result = {}
 

@@ -100,25 +100,34 @@ def main():
         except Exception as e:
             print(f"Warning: Failed to update Kitty font: {e}", file=sys.stderr)
 
-    # 6. Update SDDM dynamic settings_prefs.json font
-    for prefs_path in [
-        Path("/var/tmp/sddm-theme/settings_prefs.json"),
-        home / ".cache" / "quickshell" / "settings_prefs.json",
-    ]:
-        if prefs_path.is_file():
-            try:
-                with open(prefs_path, "r", encoding="utf-8") as f:
-                    sddm_data = json.load(f)
-                sddm_data["fontFamily"] = font_name
-                tmp_prefs = prefs_path.with_suffix(".tmp")
-                with open(tmp_prefs, "w", encoding="utf-8") as f:
-                    json.dump(sddm_data, f, indent=2)
-                tmp_prefs.replace(prefs_path)
-            except Exception as e:
-                print(
-                    f"Warning: Failed to update {prefs_path} font: {e}",
-                    file=sys.stderr,
-                )
+    # 6. Update SDDM runtime preferences. Only the keys the login theme consumes
+    #    are written, so credentials never reach the world readable /var/tmp copy.
+    sddm_prefs = Path("/var/tmp/sddm-theme/settings_prefs.json")
+    try:
+        sddm_prefs.parent.mkdir(parents=True, exist_ok=True)
+        tmp_prefs = sddm_prefs.with_suffix(".tmp")
+        with open(tmp_prefs, "w", encoding="utf-8") as f:
+            json.dump({"fontFamily": font_name}, f, indent=2)
+        tmp_prefs.replace(sddm_prefs)
+        sddm_prefs.chmod(0o644)
+    except Exception as e:
+        print(f"Warning: Failed to update {sddm_prefs} font: {e}", file=sys.stderr)
+
+    # 7. Update the shell preferences font. This file stores a GitHub token, so
+    #    it stays private to the user.
+    cache_prefs = home / ".cache" / "quickshell" / "settings_prefs.json"
+    if cache_prefs.is_file():
+        try:
+            with open(cache_prefs, "r", encoding="utf-8") as f:
+                prefs_data = json.load(f)
+            prefs_data["fontFamily"] = font_name
+            tmp_prefs = cache_prefs.with_suffix(".tmp")
+            with open(tmp_prefs, "w", encoding="utf-8") as f:
+                json.dump(prefs_data, f, indent=2)
+            tmp_prefs.replace(cache_prefs)
+            cache_prefs.chmod(0o600)
+        except Exception as e:
+            print(f"Warning: Failed to update {cache_prefs} font: {e}", file=sys.stderr)
 
 
 if __name__ == "__main__":

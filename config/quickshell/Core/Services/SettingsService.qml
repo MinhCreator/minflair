@@ -225,12 +225,23 @@ Item {
                 "islandSinglePill": settingsService.islandSinglePill,
                 "numberOfWorkspaces": settingsService.numberOfWorkspaces
             };
+            // SDDM only reads fontFamily from its preferences file, so credentials
+            // are never written to /var/tmp (it is world readable and persists
+            // across reboots).
+            let sddmData = {
+                "fontFamily": settingsService.fontFamily
+            };
             settingsSaver.running = false;
             settingsSaver.command = ["sh", "-c", "mkdir -p ~/.cache/quickshell /var/tmp/sddm-theme && cat << 'EOF' > ~/.cache/quickshell/settings_prefs.json.tmp
 " + JSON.stringify(data) + "
 EOF
 mv -f ~/.cache/quickshell/settings_prefs.json.tmp ~/.cache/quickshell/settings_prefs.json
-cp ~/.cache/quickshell/settings_prefs.json /var/tmp/sddm-theme/settings_prefs.json 2>/dev/null && chmod 666 /var/tmp/sddm-theme/settings_prefs.json 2>/dev/null || true"];
+chmod 600 ~/.cache/quickshell/settings_prefs.json
+cat << 'EOF' > /var/tmp/sddm-theme/settings_prefs.json.tmp
+" + JSON.stringify(sddmData) + "
+EOF
+mv -f /var/tmp/sddm-theme/settings_prefs.json.tmp /var/tmp/sddm-theme/settings_prefs.json
+chmod 644 /var/tmp/sddm-theme/settings_prefs.json || true"];
             settingsSaver.running = true;
         }
     }

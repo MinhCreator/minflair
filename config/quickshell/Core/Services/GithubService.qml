@@ -174,14 +174,12 @@ Item {
     Process {
         id: fetchInfoProc
 
-        command: {
-            let user = ("" + githubService.username).trim();
-            let tok = ("" + githubService.token).replace(/[\r\n\t\x00-\x1f\x7f-\xff\s]/g, "").trim();
-            if (tok !== "")
-                return ["python3", Quickshell.shellDir + "/Core/Services/scripts/fetch_github_info.py", user, tok];
-
-            return ["python3", Quickshell.shellDir + "/Core/Services/scripts/fetch_github_info.py", user];
-        }
+        // The token travels through the environment instead of argv so it never
+        // appears in process listings or /proc/<pid>/cmdline.
+        command: ["python3", Quickshell.shellDir + "/Core/Services/scripts/fetch_github_info.py", ("" + githubService.username).trim()]
+        environment: ({
+            "MINFLAIR_GITHUB_TOKEN": githubService.getCleanToken()
+        })
         onExited: (exitCode) => {
             if (exitCode === 0) {
                 try {
@@ -217,14 +215,12 @@ Item {
     Process {
         id: contribProc
 
-        command: {
-            let user = ("" + githubService.username).trim();
-            let tok = ("" + githubService.token).replace(/[\r\n\t\x00-\x1f\x7f-\xff\s]/g, "").trim();
-            if (tok !== "")
-                return ["python3", Quickshell.shellDir + "/Core/Services/scripts/fetch_github_contributions.py", user, tok];
-
-            return ["python3", Quickshell.shellDir + "/Core/Services/scripts/fetch_github_contributions.py", user];
-        }
+        // The token travels through the environment instead of argv so it never
+        // appears in process listings or /proc/<pid>/cmdline.
+        command: ["python3", Quickshell.shellDir + "/Core/Services/scripts/fetch_github_contributions.py", ("" + githubService.username).trim()]
+        environment: ({
+            "MINFLAIR_GITHUB_TOKEN": githubService.getCleanToken()
+        })
         onExited: (exitCode) => {
             if (exitCode === 0) {
                 try {

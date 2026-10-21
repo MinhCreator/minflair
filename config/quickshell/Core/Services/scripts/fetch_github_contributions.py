@@ -11,6 +11,28 @@ import urllib.request
 CACHE_DIR = os.path.expanduser("~/.cache/quickshell")
 CACHE_TTL = 3600  # 1 hour in seconds
 
+TOKEN_ENV_VAR = "MINFLAIR_GITHUB_TOKEN"
+
+
+def sanitize_token(value):
+    """Strip whitespace and control characters from a credential."""
+    if not value:
+        return ""
+    return "".join(c for c in value if c.isprintable() and not c.isspace()).strip()
+
+
+def resolve_token(argv):
+    """Read the token from the environment first.
+
+    Passing credentials as command line arguments exposes them to every local
+    user through /proc/<pid>/cmdline, so the environment is the preferred
+    transport. The argv form is only accepted as a deprecated fallback.
+    """
+    token = sanitize_token(os.environ.get(TOKEN_ENV_VAR, ""))
+    if token:
+        return token
+    return sanitize_token(argv[2]) if len(argv) > 2 else ""
+
 
 def get_cache_file(username):
     safe_name = "".join(c for c in username if c.isalnum() or c in ("-", "_"))
@@ -209,7 +231,7 @@ if __name__ == "__main__":
         print(json.dumps([]))
         sys.exit(1)
     username = sys.argv[1].strip()
-    token = sys.argv[2].strip() if len(sys.argv) > 2 else ""
+    token = resolve_token(sys.argv)
     if not username:
         print(json.dumps([]))
         sys.exit(0)
