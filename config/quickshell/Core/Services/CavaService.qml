@@ -26,7 +26,7 @@ Item {
     Process {
         id: cavaProc
 
-        command: ["sh", "-c", "exec cava -p " + Quickshell.shellDir + "/Modules/Music/cava.conf"]
+        command: ["sh", "-c", "exec cava -p \"$1\"", "minflair-cava", Quickshell.shellDir + "/Modules/Music/cava.conf"]
         running: root.isCavaActive
         onRunningChanged: {
             if (!running)

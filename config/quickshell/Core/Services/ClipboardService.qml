@@ -77,7 +77,8 @@ Item {
         if (!itemId)
             return ;
 
-        copyProc.command = ["bash", "-c", "cliphist decode " + itemId + " | wl-copy"];
+        // The id is passed as an argument so it can never be parsed as shell code.
+        copyProc.command = ["sh", "-c", "cliphist decode \"$1\" | wl-copy", "minflair-clipboard", "" + itemId];
         copyProc.startDetached();
         if (closeWidgetCallback)
             closeWidgetCallback();
@@ -97,8 +98,9 @@ Item {
                 break;
             }
         }
-        let safeLine = fullLine.replace(/'/g, "'\\''");
-        deleteProc.command = ["bash", "-c", "echo '" + safeLine + "' | cliphist delete"];
+        // The raw cliphist line is passed as an argument and written with printf, so
+        // quotes, backslashes or a leading dash can no longer break or inject.
+        deleteProc.command = ["sh", "-c", "printf '%s\\n' \"$1\" | cliphist delete", "minflair-clipboard", "" + fullLine];
         deleteProc.startDetached();
     }
 
@@ -147,7 +149,9 @@ Item {
                     if (parts.length >= 2) {
                         let text = parts.slice(1).join('\t');
                         let isImage = text.startsWith("[[ binary data") && text.includes("]]");
-                        if (isImage)
+                        // cliphist ids are numeric, so anything else is discarded
+                        // before it can reach the shell.
+                        if (isImage && /^[0-9]+$/.test(parts[0]))
                             imageIds.push(parts[0]);
 
                         clipboardModel.append({
@@ -159,8 +163,8 @@ Item {
                     }
                 });
                 if (imageIds.length > 0) {
-                    let cmd = "mkdir -p /tmp/quickshell-clipboard && for id in " + imageIds.join(" ") + "; do if [ ! -f /tmp/quickshell-clipboard/$id.png ]; then cliphist decode $id > /tmp/quickshell-clipboard/$id.png; fi; done";
-                    decodeImagesProc.command = ["bash", "-c", cmd];
+                    let cmd = "mkdir -p /tmp/quickshell-clipboard && for id in " + imageIds.join(" ") + "; do if [ ! -f \"/tmp/quickshell-clipboard/$id.png\" ]; then cliphist decode \"$id\" > \"/tmp/quickshell-clipboard/$id.png\"; fi; done";
+                    decodeImagesProc.command = ["sh", "-c", cmd];
                     decodeImagesProc.running = true;
                 } else {
                     root.filterClipboard("");

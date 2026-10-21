@@ -47,9 +47,14 @@ QtObject {
     property bool generateFromWallpaper: false
     property bool wallpaperIsDark: true
     property var wallpaperColors: null
+    property var wallpaperDarkScheme: null
+    property var wallpaperLightScheme: null
+    property bool wallpaperDarkLoaded: false
+    property bool wallpaperLightLoaded: false
     property Process saver
     property Process loader
-    property Process wallpaperLoader
+    property Process wallpaperDarkLoader
+    property Process wallpaperLightLoader
     property Process generatorProc
     property Process applyThemeProc
     property Connections wpConn
@@ -104,9 +109,11 @@ QtObject {
             "shadow": "" + shadow
         };
         let json = JSON.stringify(obj);
-        let home = Quickshell.env("HOME");
+        // The JSON payload travels inside a quoted heredoc and $HOME is expanded by
+        // the shell itself, so no value is ever interpolated into shell code. A
+        // scheme name or path containing quotes can no longer break or inject.
         saver.running = false;
-        saver.command = ["bash", "-c", "mkdir -p '" + home + "/.cache/quickshell' && echo '" + json + "' > '" + home + "/.cache/quickshell/colorscheme.json'"];
+        saver.command = ["sh", "-c", "mkdir -p \"$HOME/.cache/quickshell\" && cat << 'EOF' > \"$HOME/.cache/quickshell/colorscheme.json.tmp\"\n" + json + "\nEOF\nmv -f \"$HOME/.cache/quickshell/colorscheme.json.tmp\" \"$HOME/.cache/quickshell/colorscheme.json\""];
         saver.running = true;
     }
 
@@ -119,8 +126,41 @@ QtObject {
     function loadScheme() {
         loader.running = false;
         loader.running = true;
-        wallpaperLoader.running = false;
-        wallpaperLoader.running = true;
+        // Both cached wallpaper schemes are read directly, without a shell, and
+        // published together so a partially loaded palette is never exposed.
+        wallpaperDarkLoaded = false;
+        wallpaperLightLoaded = false;
+        wallpaperDarkLoader.running = false;
+        wallpaperDarkLoader.running = true;
+        wallpaperLightLoader.running = false;
+        wallpaperLightLoader.running = true;
+    }
+
+    function parseSchemeText(text, exitCode) {
+        if (exitCode !== 0)
+            return null;
+
+        try {
+            return JSON.parse(text);
+        } catch (e) {
+            return null;
+        }
+    }
+
+    function publishWallpaperScheme(side, scheme) {
+        if (side === "dark") {
+            wallpaperDarkScheme = scheme;
+            wallpaperDarkLoaded = true;
+        } else {
+            wallpaperLightScheme = scheme;
+            wallpaperLightLoaded = true;
+        }
+        if (wallpaperDarkLoaded && wallpaperLightLoaded)
+            wallpaperColors = {
+            "dark": wallpaperDarkScheme,
+            "light": wallpaperLightScheme
+        };
+
     }
 
     Component.onCompleted: loadScheme()
@@ -235,19 +275,26 @@ QtObject {
 
     }
 
-    wallpaperLoader: Process {
-        command: ["bash", "-c", "echo '{ \"dark\": '`cat ~/.cache/quickshell/wallpaper_colorscheme_dark.json 2>/dev/null || echo \"null\"`', \"light\": '`cat ~/.cache/quickshell/wallpaper_colorscheme_light.json 2>/dev/null || echo \"null\"`' }'"]
+    wallpaperDarkLoader: Process {
+        command: ["cat", Quickshell.env("HOME") + "/.cache/quickshell/wallpaper_colorscheme_dark.json"]
         onExited: function(exitCode) {
-            if (exitCode === 0) {
-                try {
-                    root.wallpaperColors = JSON.parse(wallpaperLoaderOutput.text);
-                } catch (e) {
-                }
-            }
+            root.publishWallpaperScheme("dark", root.parseSchemeText(wallpaperDarkOutput.text, exitCode));
         }
 
         stdout: StdioCollector {
-            id: wallpaperLoaderOutput
+            id: wallpaperDarkOutput
+        }
+
+    }
+
+    wallpaperLightLoader: Process {
+        command: ["cat", Quickshell.env("HOME") + "/.cache/quickshell/wallpaper_colorscheme_light.json"]
+        onExited: function(exitCode) {
+            root.publishWallpaperScheme("light", root.parseSchemeText(wallpaperLightOutput.text, exitCode));
+        }
+
+        stdout: StdioCollector {
+            id: wallpaperLightOutput
         }
 
     }

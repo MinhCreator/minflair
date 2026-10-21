@@ -191,16 +191,18 @@ Item {
             body = "Break finished. Time to focus for " + focusMinutes + " minutes.";
         }
         let iconPath = Quickshell.shellDir + "/assets/pomodoro-icon.svg";
-        let command = "";
-        if (notifications)
-            command += "notify-send -a Pomodoro -i '" + iconPath + "' 'Pomodoro' '" + body + "'; ";
-
-        if (soundEnabled)
-            command += "(paplay '" + soundFile + "' 2>/dev/null || canberra-gtk-play -i " + canberraId + " 2>/dev/null || true)";
-
-        notifier.command = ["sh", "-c", command];
-        notifier.running = false;
-        notifier.running = true;
+        // Every value travels as an argument (argv for notify-send, "$1"/"$2" for
+        // the sound fallback), so nothing is interpolated into shell code.
+        if (notifications) {
+            notificationProc.command = ["notify-send", "-a", "Pomodoro", "-i", iconPath, "Pomodoro", body];
+            notificationProc.running = false;
+            notificationProc.running = true;
+        }
+        if (soundEnabled) {
+            soundProc.command = ["sh", "-c", "paplay \"$1\" 2>/dev/null || canberra-gtk-play -i \"$2\" 2>/dev/null || true", "minflair-pomodoro", soundFile, canberraId];
+            soundProc.running = false;
+            soundProc.running = true;
+        }
     }
 
     function saveDebounced() {
@@ -361,7 +363,11 @@ Item {
     }
 
     Process {
-        id: notifier
+        id: notificationProc
+    }
+
+    Process {
+        id: soundProc
     }
 
 }

@@ -425,7 +425,7 @@ chmod 644 /var/tmp/sddm-theme/settings_prefs.json || true"];
     Process {
         id: hyprScaleApplyProc
 
-        command: ["sh", "-c", Quickshell.shellDir + "/Scripts/system/hypr_scale.sh " + settingsService.hyprScale]
+        command: ["sh", "-c", "\"$1\" \"$2\"", "minflair-hypr-scale", Quickshell.shellDir + "/Scripts/system/hypr_scale.sh", "" + settingsService.hyprScale]
     }
 
     Process {
