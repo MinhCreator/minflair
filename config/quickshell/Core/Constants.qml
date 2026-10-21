@@ -3,6 +3,9 @@ import qs.Core.Services
 pragma Singleton
 
 QtObject {
+    // Single source of truth for the version shown in the UI (sidebar footer,
+    // Settings → System Info). Keep it in sync with CHANGELOG.md on every release.
+    readonly property string appVersion: "2.1.0"
     property string fontFamily: SettingsService.fontFamily
     property int size3Xs: 2
     property int size2Xs: 4

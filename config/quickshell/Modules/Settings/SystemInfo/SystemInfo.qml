@@ -65,6 +65,11 @@ AppContainer {
         icon: "info"
 
         InfoRow {
+            label: "Minflair"
+            value: "v" + Constants.appVersion
+        }
+
+        InfoRow {
             label: "Host Model"
             value: root.hostModel
             visible: root.hostModel !== ""
