@@ -1,7 +1,6 @@
 import QtQuick
 import QtQuick.Effects
 import qs.Core
-import qs.Core.Components
 import qs.Core.Services
 import qs.Core.Utils
 
@@ -101,24 +100,6 @@ Rectangle {
 
         }
 
-    }
-
-    RadialGlow {
-        anchors.fill: parent
-        glowColor: Theme.bgAccentComplementary
-        glowCenterX: parent.width / 2 + parent.width / 3
-        glowCenterY: parent.height / 2 - parent.height / 3.5
-        glowRadiusX: parent.width / 3
-        glowRadiusY: parent.height / 3
-    }
-
-    RadialGlow {
-        anchors.fill: parent
-        glowColor: Theme.bgAccent
-        glowCenterX: parent.width / 2 - parent.width / 3
-        glowCenterY: parent.height / 2 + parent.height / 3.5
-        glowRadiusX: parent.width / 3
-        glowRadiusY: parent.height / 3
     }
 
 }
