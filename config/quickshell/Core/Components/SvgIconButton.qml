@@ -1,5 +1,5 @@
-import Qt5Compat.GraphicalEffects
 import QtQuick
+import QtQuick.Effects
 import QtQuick.Layouts
 import Quickshell
 import qs.Core
@@ -66,7 +66,7 @@ Rectangle {
                 visible: root.useOriginalColors
             }
 
-            ColorOverlay {
+            MultiEffect {
                 id: colorOverlay
 
                 property color targetColor: {
@@ -81,7 +81,10 @@ Rectangle {
 
                 anchors.fill: parent
                 source: iconImage
-                color: Qt.rgba(targetColor.r, targetColor.g, targetColor.b, 1)
+                contrast: -1
+                brightness: 0.5
+                colorization: 1
+                colorizationColor: Qt.rgba(targetColor.r, targetColor.g, targetColor.b, 1)
                 opacity: targetColor.a
                 visible: !root.useOriginalColors
                 scale: disabled ? 1 : mouseArea.containsMouse ? 1.15 : 1
@@ -94,7 +97,7 @@ Rectangle {
 
                 }
 
-                Behavior on color {
+                Behavior on colorizationColor {
                     ColorAnimation {
                         duration: Constants.animNormal
                     }

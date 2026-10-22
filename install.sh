@@ -63,7 +63,7 @@ dependencies=(
   gnome-keyring libsecret awww playerctl ffmpeg exfatprogs dosfstools gvfs-afc power-profiles-daemon
   sof-firmware gamemode python-pam less qt5ct qt6ct papirus-icon-theme wf-recorder
   tesseract tesseract-data-eng tesseract-data-spa tree-sitter-cli
-  noto-fonts ttf-liberation ttf-roboto zoxide qt6-5compat
+  noto-fonts ttf-liberation ttf-roboto zoxide
   sddm qt5-quickcontrols2 qt5-graphicaleffects qt5-svg
 )
 

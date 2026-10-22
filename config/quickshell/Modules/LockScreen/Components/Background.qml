@@ -1,7 +1,7 @@
-import Qt5Compat.GraphicalEffects
 import QtQuick
 import QtQuick.Effects
 import qs.Core
+import qs.Core.Components
 import qs.Core.Services
 import qs.Core.Utils
 
@@ -103,48 +103,22 @@ Rectangle {
 
     }
 
-    RadialGradient {
+    RadialGlow {
         anchors.fill: parent
-        horizontalOffset: parent.width / 3
-        verticalOffset: -parent.height / 3.5
-        horizontalRadius: parent.width / 3
-        verticalRadius: parent.height / 3
-
-        gradient: Gradient {
-            GradientStop {
-                position: 0
-                color: Theme.bgAccentComplementary
-            }
-
-            GradientStop {
-                position: 1
-                color: "transparent"
-            }
-
-        }
-
+        glowColor: Theme.bgAccentComplementary
+        glowCenterX: parent.width / 2 + parent.width / 3
+        glowCenterY: parent.height / 2 - parent.height / 3.5
+        glowRadiusX: parent.width / 3
+        glowRadiusY: parent.height / 3
     }
 
-    RadialGradient {
+    RadialGlow {
         anchors.fill: parent
-        horizontalOffset: -parent.width / 3
-        verticalOffset: parent.height / 3.5
-        horizontalRadius: parent.width / 3
-        verticalRadius: parent.height / 3
-
-        gradient: Gradient {
-            GradientStop {
-                position: 0
-                color: Theme.bgAccent
-            }
-
-            GradientStop {
-                position: 1
-                color: "transparent"
-            }
-
-        }
-
+        glowColor: Theme.bgAccent
+        glowCenterX: parent.width / 2 - parent.width / 3
+        glowCenterY: parent.height / 2 + parent.height / 3.5
+        glowRadiusX: parent.width / 3
+        glowRadiusY: parent.height / 3
     }
 
 }

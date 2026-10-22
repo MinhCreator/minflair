@@ -1,6 +1,6 @@
-import Qt5Compat.GraphicalEffects
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Effects
 import QtQuick.Layouts
 import Quickshell
 import qs.Core
@@ -48,12 +48,13 @@ SettingRowTemplate {
                 scale: settingSwitch.pressed ? 0.9 : (settingSwitch.hovered ? 1.05 : 1)
                 layer.enabled: true
 
-                layer.effect: DropShadow {
-                    transparentBorder: true
-                    color: Theme.shadow
-                    radius: Constants.size3Xs + 1
-                    samples: 7
-                    verticalOffset: 1
+                layer.effect: MultiEffect {
+                    shadowEnabled: true
+                    shadowColor: Theme.shadow
+                    blurMax: (Constants.size3Xs + 1) * 2
+                    shadowBlur: 1
+                    shadowVerticalOffset: 1
+                    shadowHorizontalOffset: 0
                 }
 
                 Behavior on x {

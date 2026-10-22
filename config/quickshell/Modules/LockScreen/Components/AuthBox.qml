@@ -1,6 +1,6 @@
-import Qt5Compat.GraphicalEffects
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Effects
 import QtQuick.Layouts
 import Quickshell
 import qs.Core
@@ -215,12 +215,20 @@ Item {
                         asynchronous: true
                         layer.enabled: true
 
-                        layer.effect: OpacityMask {
+                        layer.effect: MultiEffect {
+                            maskEnabled: true
 
-                            maskSource: Rectangle {
-                                width: avatarInner.width
-                                height: avatarInner.height
-                                radius: avatarInner.radius
+                            maskSource: ShaderEffectSource {
+                                visible: false
+                                hideSource: true
+
+                                sourceItem: Rectangle {
+                                    width: avatarInner.width
+                                    height: avatarInner.height
+                                    radius: avatarInner.radius
+                                    color: Theme.white
+                                }
+
                             }
 
                         }

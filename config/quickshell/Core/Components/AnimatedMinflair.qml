@@ -1,5 +1,5 @@
-import Qt5Compat.GraphicalEffects
 import QtQuick
+import QtQuick.Effects
 import QtQuick.Shapes
 import qs.Core
 import qs.Core.Services
@@ -225,14 +225,13 @@ Item {
 
     }
 
-    layer.effect: DropShadow {
-        id: shadowEffect
-
-        transparentBorder: true
-        color: root.iconColor
-        radius: Constants.sizeXs
-        samples: 17
-        spread: 0.1
+    layer.effect: MultiEffect {
+        shadowEnabled: true
+        shadowColor: root.iconColor
+        blurMax: Constants.sizeXs * 2
+        shadowBlur: 1
+        shadowVerticalOffset: 0
+        shadowHorizontalOffset: 0
     }
 
 }

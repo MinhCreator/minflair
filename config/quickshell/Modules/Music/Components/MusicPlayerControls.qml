@@ -1,6 +1,6 @@
-import Qt5Compat.GraphicalEffects
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Effects
 import QtQuick.Layouts
 import Quickshell.Services.Mpris
 import qs.Core
@@ -91,11 +91,13 @@ RowLayout {
 
         }
 
-        layer.effect: DropShadow {
-            transparentBorder: true
-            color: Theme.accent
-            radius: Constants.sizeMd
-            samples: 25
+        layer.effect: MultiEffect {
+            shadowEnabled: true
+            shadowColor: Theme.accent
+            blurMax: Constants.sizeMd * 2
+            shadowBlur: 1
+            shadowVerticalOffset: 0
+            shadowHorizontalOffset: 0
             opacity: 0.5
         }
 

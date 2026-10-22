@@ -1,6 +1,6 @@
-import Qt5Compat.GraphicalEffects
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Effects
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
@@ -65,11 +65,18 @@ Item {
                     visible: false
                 }
 
-                OpacityMask {
+                MultiEffect {
                     anchors.fill: parent
                     source: artImage
-                    maskSource: artMask
+                    maskEnabled: true
                     visible: artImage.status === Image.Ready && MprisService.activePlayer !== null
+
+                    maskSource: ShaderEffectSource {
+                        visible: false
+                        hideSource: true
+                        sourceItem: artMask
+                    }
+
                 }
 
                 Rectangle {

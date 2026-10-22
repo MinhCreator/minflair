@@ -1,5 +1,5 @@
-import Qt5Compat.GraphicalEffects
 import QtQuick
+import QtQuick.Effects
 import Quickshell
 import qs.Core
 import qs.Core.Services
@@ -45,10 +45,17 @@ Rectangle {
         visible: root.useOriginalColors
     }
 
-    ColorOverlay {
+    // Replaces Qt5Compat's ColorOverlay: MultiEffect colorization multiplies the
+    // tint by the source luminance, so the source is first flattened to its own
+    // alpha (contrast -1 + brightness 0.5) to get a uniform, premultiplied tint
+    // that is independent of the SVG's own colors.
+    MultiEffect {
         anchors.fill: iconImage
         source: iconImage
-        color: Qt.rgba(root.iconColor.r, root.iconColor.g, root.iconColor.b, 1)
+        contrast: -1
+        brightness: 0.5
+        colorization: 1
+        colorizationColor: Qt.rgba(root.iconColor.r, root.iconColor.g, root.iconColor.b, 1)
         opacity: root.iconColor.a
         visible: !root.useOriginalColors
     }

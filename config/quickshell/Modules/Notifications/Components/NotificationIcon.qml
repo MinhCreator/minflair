@@ -1,5 +1,5 @@
-import Qt5Compat.GraphicalEffects
 import QtQuick
+import QtQuick.Effects
 import QtQuick.Layouts
 import qs.Core
 import qs.Core.Components
@@ -73,12 +73,20 @@ Item {
             sourceSize: Qt.size(root.width > 0 ? root.width : root.iconSize, root.height > 0 ? root.height : root.iconSize)
             layer.enabled: true
 
-            layer.effect: OpacityMask {
+            layer.effect: MultiEffect {
+                maskEnabled: true
 
-                maskSource: Rectangle {
-                    width: root.width > 0 ? root.width : root.iconSize
-                    height: root.height > 0 ? root.height : root.iconSize
-                    radius: Constants.sizeXs
+                maskSource: ShaderEffectSource {
+                    visible: false
+                    hideSource: true
+
+                    sourceItem: Rectangle {
+                        width: root.width > 0 ? root.width : root.iconSize
+                        height: root.height > 0 ? root.height : root.iconSize
+                        radius: Constants.sizeXs
+                        color: Theme.white
+                    }
+
                 }
 
             }

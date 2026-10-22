@@ -1,5 +1,5 @@
-import Qt5Compat.GraphicalEffects
 import QtQuick
+import QtQuick.Effects
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
@@ -130,11 +130,18 @@ Card {
                         antialiasing: true
                     }
 
-                    OpacityMask {
+                    MultiEffect {
                         anchors.fill: parent
                         source: userImage
-                        maskSource: mask
+                        maskEnabled: true
                         visible: userImage.status === Image.Ready
+
+                        maskSource: ShaderEffectSource {
+                            visible: false
+                            hideSource: true
+                            sourceItem: mask
+                        }
+
                     }
 
                 }

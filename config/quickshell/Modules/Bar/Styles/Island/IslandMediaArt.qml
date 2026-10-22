@@ -1,5 +1,5 @@
-import Qt5Compat.GraphicalEffects
 import QtQuick
+import QtQuick.Effects
 import qs.Core
 import qs.Core.Components
 import qs.Core.Services
@@ -45,11 +45,18 @@ Item {
             visible: false
         }
 
-        OpacityMask {
+        MultiEffect {
             anchors.fill: parent
             source: artImage
-            maskSource: artMask
+            maskEnabled: true
             visible: artImage.status === Image.Ready && (artImage.source + "").trim() !== ""
+
+            maskSource: ShaderEffectSource {
+                visible: false
+                hideSource: true
+                sourceItem: artMask
+            }
+
         }
 
         SvgIcon {

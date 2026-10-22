@@ -1,5 +1,5 @@
-import Qt5Compat.GraphicalEffects
 import QtQuick
+import QtQuick.Effects
 import qs.Core
 import qs.Core.Components
 import qs.Core.Services
@@ -86,12 +86,20 @@ Item {
 
             }
 
-            layer.effect: OpacityMask {
+            layer.effect: MultiEffect {
+                maskEnabled: true
 
-                maskSource: Rectangle {
-                    width: imageMaskContainer.width
-                    height: imageMaskContainer.height
-                    radius: Math.max(0, Constants.sizeLg - cardBorder.border.width)
+                maskSource: ShaderEffectSource {
+                    visible: false
+                    hideSource: true
+
+                    sourceItem: Rectangle {
+                        width: imageMaskContainer.width
+                        height: imageMaskContainer.height
+                        radius: Math.max(0, Constants.sizeLg - cardBorder.border.width)
+                        color: Theme.white
+                    }
+
                 }
 
             }
