@@ -4,6 +4,7 @@ import QtQuick.Layouts
 import Quickshell
 import qs.Core
 import qs.Core.Components
+import qs.Core.Utils
 import qs.Modules.Notifications.Components
 
 Rectangle {
@@ -15,69 +16,9 @@ Rectangle {
     property var currentTime
     property bool expanded: false
     property bool isDeletingAnim: false
+    property bool flat: false
     readonly property real targetHeight: isDeletingAnim ? 0 : (delegateLayout.implicitHeight + Constants.sizeLg * 2)
-    readonly property var parsedNotif: {
-        if (!notifData)
-            return {
-            "app": "",
-            "title": "",
-            "message": ""
-        };
-
-        let app = (notifData.appName || "").trim();
-        let sum = (notifData.summary || "").trim();
-        let body = (notifData.body || "").trim();
-        // Case 1: summary is generic (e.g. "WhatsApp Web", "WhatsApp") and body contains sender + message separated by newline
-        if ((sum.toLowerCase().includes("whatsapp") || (app !== "" && sum.toLowerCase() === app.toLowerCase())) && body.includes("\n")) {
-            let lines = body.split("\n").filter(function(l) {
-                return l.trim().length > 0;
-            });
-            if (lines.length >= 2)
-                return {
-                "app": sum !== "" ? sum : app,
-                "title": lines[0].trim(),
-                "message": lines.slice(1).join("\n").trim()
-            };
-
-        }
-        // Case 2: summary is generic and body has "Sender: Message"
-        if ((sum.toLowerCase().includes("whatsapp") || (app !== "" && sum.toLowerCase() === app.toLowerCase())) && body.includes(": ")) {
-            let colonIdx = body.indexOf(": ");
-            let sender = body.substring(0, colonIdx).trim();
-            let msg = body.substring(colonIdx + 2).trim();
-            if (sender.length > 0 && msg.length > 0)
-                return {
-                "app": sum !== "" ? sum : app,
-                "title": sender,
-                "message": msg
-            };
-
-        }
-        // Case 3: We have a valid appName distinct from summary and System
-        let hasDistinctApp = app !== "" && app !== "System" && app.toLowerCase() !== sum.toLowerCase();
-        return {
-            "app": hasDistinctApp ? app : (sum.toLowerCase().includes("whatsapp") ? sum : ""),
-            "title": sum,
-            "message": body
-        };
-    }
-
-    function timeAgo(date, now) {
-        if (!date || isNaN(date.getTime()) || !now || isNaN(now.getTime()))
-            return "...";
-
-        let diff = Math.floor((now.getTime() - date.getTime()) / 1000);
-        if (diff < 60)
-            return "Just now";
-
-        if (diff < 3600)
-            return Math.floor(diff / 60) + "m ago";
-
-        if (diff < 86400)
-            return Math.floor(diff / 3600) + "h ago";
-
-        return Math.floor(diff / 86400) + "d ago";
-    }
+    readonly property var parsedNotif: NotificationUtils.parse(notifData)
 
     function startDeleteAnimation() {
         if (isDeletingAnim)
@@ -88,11 +29,29 @@ Rectangle {
 
     width: ListView.view ? ListView.view.width : 400
     height: targetHeight
-    color: delegateMouseArea.containsMouse && !delegateRoot.isDeletingAnim ? Theme.bgSecondary : Theme.bgTertiary
-    radius: Constants.sizeXl
+    color: delegateRoot.flat ? "transparent" : (delegateMouseArea.containsMouse && !delegateRoot.isDeletingAnim ? Theme.bgSecondary : Theme.bgTertiary)
+    radius: delegateRoot.flat ? 0 : Constants.sizeXl
     z: isDeletingAnim ? 1 : 2
     clip: true
     opacity: isDeletingAnim ? 0 : 1
+
+    Rectangle {
+        id: flatHoverBackground
+
+        visible: delegateRoot.flat
+        anchors.fill: parent
+        anchors.margins: Constants.size2Xs
+        radius: Constants.sizeLg
+        color: delegateMouseArea.containsMouse && !delegateRoot.isDeletingAnim ? Theme.bgSecondary : "transparent"
+
+        Behavior on color {
+            ColorAnimation {
+                duration: Constants.animFast
+            }
+
+        }
+
+    }
 
     Item {
         id: delegateContent
@@ -164,9 +123,7 @@ Rectangle {
                             if (!ts)
                                 return "Just now";
 
-                            let n = Number(ts);
-                            let d = new Date(n < 1e+10 ? n * 1000 : n);
-                            return delegateRoot.timeAgo(d, delegateRoot.currentTime);
+                            return TimeUtils.timeAgo(ts, delegateRoot.currentTime);
                         }
                         color: Theme.muted
                         customSize: Constants.sizeXs + 2

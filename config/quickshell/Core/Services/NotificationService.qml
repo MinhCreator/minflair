@@ -118,6 +118,17 @@ Item {
         }
     }
 
+    function removeNotifications(ids) {
+        if (!ids)
+            return ;
+
+        for (let i = 0; i < ids.length; i++) {
+            if (ids[i])
+                removeNotification(ids[i]);
+
+        }
+    }
+
     function clearHistory() {
         notificationGroups = {
         };
