@@ -10,6 +10,9 @@ Item {
     required property var notificationService
     property var mainPanelWidget: null
     property string activeBarStyle: SettingsService.barStyle
+    // When false the active style is not instantiated, letting a host window
+    // stay mapped without building a bar it will not display.
+    property bool styleEnabled: true
     readonly property bool isCurrentIsland: activeBarStyle === "island"
     readonly property bool isCurrentConvex: activeBarStyle === "convex"
     // Use unified interface exposed by IBarStyle implementation
@@ -50,7 +53,7 @@ Item {
         id: islandLoader
 
         anchors.fill: parent
-        active: mainBar.isCurrentIsland
+        active: mainBar.isCurrentIsland && mainBar.styleEnabled
         visible: active
         sourceComponent: islandComp
         enabled: visible
@@ -60,7 +63,7 @@ Item {
         id: convexLoader
 
         anchors.fill: parent
-        active: mainBar.isCurrentConvex
+        active: mainBar.isCurrentConvex && mainBar.styleEnabled
         visible: active
         sourceComponent: convexComp
         enabled: visible

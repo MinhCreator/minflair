@@ -108,17 +108,21 @@ ShellRoot {
 
     }
 
+    // Both bar windows stay mapped while the shell runs. WlrLayershell destroys
+    // its backing window when it becomes invisible, and Quickshell/Qt can crash
+    // while tearing that window down, so style switches must not hide them.
+    // Each window deactivates itself through its mask/content instead.
     BarOverlayWindow {
         notificationService: globalNotificationService
         barSurface: barSurface
-        visible: SettingsService.settingsLoaded && !root.isConvex && !root.isGaming
+        visible: SettingsService.settingsLoaded && !root.isGaming
     }
 
     ConvexDesktop {
         id: convexDesktopSurface
 
         notificationService: globalNotificationService
-        visible: SettingsService.settingsLoaded && root.isConvex && !root.isGaming
+        visible: SettingsService.settingsLoaded && !root.isGaming
     }
 
     GamingOverlay {

@@ -334,6 +334,8 @@ PanelWindow {
             id: barStrip
 
             activeBarStyle: root.activeBarStyle
+            styleEnabled: root.isPill
+            visible: root.isPill
             z: (root.activeHost === barStrip && root.activeHost.isOpen) ? 30 : (root.activeHost === barStrip ? 5 : 1)
             notificationService: root.notificationService
             mainPanelWidget: null
@@ -368,10 +370,10 @@ PanelWindow {
     mask: Region {
         // Center (Island)
         Region {
-            x: root.isPill ? (barStrip.x + barStrip.centerX - 16) : (barStrip.x - 16)
+            x: root.isPill ? (barStrip.x + barStrip.centerX - 16) : 0
             y: Math.max(0, barStrip.y - 24)
-            width: root.isPill ? (barStrip.centerWidth + 32) : (barStrip.width + 32)
-            height: barStrip.height + 40
+            width: root.isPill ? (barStrip.centerWidth + 32) : 0
+            height: root.isPill ? (barStrip.height + 40) : 0
         }
 
         // Expandable Host Overlay

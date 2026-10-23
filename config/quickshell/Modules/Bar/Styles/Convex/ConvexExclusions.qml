@@ -23,8 +23,10 @@ Item {
         color: "transparent"
         focusable: false
         WlrLayershell.exclusiveZone: root.isExclusionActive ? root.bezelSize : 0
-        implicitHeight: root.isExclusionActive ? root.bezelSize : 0
-        visible: root.isExclusionActive
+        implicitHeight: root.bezelSize
+        // Keep the surface mapped so style switches never destroy a layer
+        // window (Quickshell can crash while tearing one down).
+        visible: root.bezelSize > 0
 
         mask: Region {
         }
@@ -41,8 +43,8 @@ Item {
         color: "transparent"
         focusable: false
         WlrLayershell.exclusiveZone: root.isExclusionActive ? root.bezelSize : 0
-        implicitWidth: root.isExclusionActive ? root.bezelSize : 0
-        visible: root.isExclusionActive
+        implicitWidth: root.bezelSize
+        visible: root.bezelSize > 0
 
         mask: Region {
         }
@@ -59,8 +61,8 @@ Item {
         color: "transparent"
         focusable: false
         WlrLayershell.exclusiveZone: root.isExclusionActive ? root.bezelSize : 0
-        implicitWidth: root.isExclusionActive ? root.bezelSize : 0
-        visible: root.isExclusionActive
+        implicitWidth: root.bezelSize
+        visible: root.bezelSize > 0
 
         mask: Region {
         }

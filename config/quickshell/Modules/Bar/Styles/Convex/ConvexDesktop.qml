@@ -22,7 +22,7 @@ PanelWindow {
     property int bezelSize: DisplayProfileService.gameModeActive ? 0 : Constants.sizeXs
     property bool hasFullscreen: (Hyprland.focusedWorkspace && Hyprland.focusedWorkspace.hasFullscreen) ? HyprlandService.isTrueFullscreen : false
     property real fsTransitionProg: hasFullscreen ? 0 : 1
-    readonly property bool needsFocus: AppState.isFocusWidgetOpen && convexPanels.hasAnyDrawerOpen
+    readonly property bool needsFocus: root.isConvexMode && AppState.isFocusWidgetOpen && convexPanels.hasAnyDrawerOpen
 
     function triggerStyleSwitch() {
         root.activeBarStyle = SettingsService.barStyle;
@@ -105,6 +105,7 @@ PanelWindow {
 
         anchors.fill: parent
         opacity: root.isConvexMode ? 1 : 0
+        visible: root.isConvexMode || opacity > 0.001
         layer.enabled: HyprlandService.hyprShadow && !DisplayProfileService.gameModeActive && (SystemInfoService.powerProfile !== "power-saver")
 
         ConvexPanels {
@@ -208,37 +209,37 @@ PanelWindow {
         Region {
             x: 0
             y: 0
-            width: root.width
-            height: root.barHeight * root.fsTransitionProg
+            width: root.isConvexMode ? root.width : 0
+            height: root.isConvexMode ? (root.barHeight * root.fsTransitionProg) : 0
         }
 
         // Left border
         Region {
             x: 0
             y: root.barHeight * root.fsTransitionProg
-            width: root.bezelSize * root.fsTransitionProg
-            height: root.height
+            width: root.isConvexMode ? (root.bezelSize * root.fsTransitionProg) : 0
+            height: root.isConvexMode ? root.height : 0
         }
 
         // Right border
         Region {
             x: root.width - (root.bezelSize * root.fsTransitionProg)
             y: root.barHeight * root.fsTransitionProg
-            width: root.bezelSize * root.fsTransitionProg
-            height: root.height
+            width: root.isConvexMode ? (root.bezelSize * root.fsTransitionProg) : 0
+            height: root.isConvexMode ? root.height : 0
         }
 
         // Bottom border
         Region {
             x: root.bezelSize * root.fsTransitionProg
             y: root.height - (root.bezelSize * root.fsTransitionProg)
-            width: root.width - (2 * root.bezelSize * root.fsTransitionProg)
-            height: root.bezelSize * root.fsTransitionProg
+            width: root.isConvexMode ? (root.width - (2 * root.bezelSize * root.fsTransitionProg)) : 0
+            height: root.isConvexMode ? (root.bezelSize * root.fsTransitionProg) : 0
         }
 
         // Active Panels Overlay (Full Screen for Clicks/Focus)
         Region {
-            property bool isActive: convexPanels.hasAnyPanelOpen || convexPanels.isConvexCenterOpen
+            property bool isActive: root.isConvexMode && (convexPanels.hasAnyPanelOpen || convexPanels.isConvexCenterOpen)
 
             x: 0
             y: 0
