@@ -14,6 +14,7 @@ from theme_appliers import (
     kitty,
     lazygit,
     nvim,
+    obsidian,
     qt,
     sddm,
     starship,
@@ -99,6 +100,7 @@ def main():
     btop.apply(home, colors)
     svg_assets.apply(home, colors)
     lazygit.apply(home, colors)
+    obsidian.apply(home, colors)
     sddm.apply(home, colors)
 
 
