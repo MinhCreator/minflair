@@ -12,11 +12,14 @@ Item {
     property bool isCurrent: false
     property bool isExpanded: false
     property int currentActionIndex: -1
-    readonly property bool hasActions: modelData.actions && modelData.actions.length > 0
-    readonly property int actionCount: modelData.actions ? modelData.actions.length : 0
+    readonly property bool isApp: modelData && modelData.type === "app"
+    readonly property bool hasActions: isApp && modelData.actions && modelData.actions.length > 0
+    readonly property int actionCount: hasActions ? modelData.actions.length : 0
+    readonly property string subtitle: modelData && modelData.subtitle ? modelData.subtitle : ""
 
     signal toggleExpanded()
     signal launchRequested(string exec, bool inTerminal)
+    signal activateRequested()
 
     onIsExpandedChanged: {
         if (!isExpanded)
@@ -50,6 +53,7 @@ Item {
             Item {
                 Layout.preferredWidth: Constants.size2Xl
                 Layout.preferredHeight: Constants.size2Xl
+                visible: delegateRoot.isApp
 
                 Image {
                     id: appIcon
@@ -92,6 +96,7 @@ Item {
                 font.bold: isCurrent
                 customSize: Constants.sizeMd
                 Layout.fillWidth: true
+                elide: Text.ElideRight
                 scale: isCurrent ? 1.02 : 1
                 transformOrigin: Item.Left
 
@@ -112,6 +117,16 @@ Item {
 
             }
 
+            ThemedText {
+                text: delegateRoot.subtitle
+                visible: text !== ""
+                color: Theme.muted
+                customSize: Constants.sizeSm
+                Layout.alignment: Qt.AlignVCenter
+                Layout.maximumWidth: mainContent.width / 3
+                elide: Text.ElideRight
+            }
+
         }
 
         HoverHandler {
@@ -121,11 +136,14 @@ Item {
         MouseArea {
             anchors.fill: parent
             acceptedButtons: Qt.LeftButton | Qt.RightButton
+            cursorShape: Qt.PointingHandCursor
             onClicked: function(mouse) {
                 if (mouse.button === Qt.RightButton && delegateRoot.hasActions)
                     delegateRoot.toggleExpanded();
-                else
+                else if (delegateRoot.isApp)
                     delegateRoot.launchRequested(modelData.exec, modelData.terminal);
+                else
+                    delegateRoot.activateRequested();
             }
         }
 

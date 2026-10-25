@@ -115,6 +115,39 @@ AppContainer {
 
         }
 
+        ThemedSelect {
+            id: browserSelect
+
+            label: "Default Browser"
+            description: "Used by launcher web search"
+            model: {
+                let browsers = ["system"];
+                for (let i = 0; i < SettingsService.availableBrowsers.length; i++) browsers.push(SettingsService.availableBrowsers[i].id)
+                return browsers;
+            }
+            currentIndex: {
+                if (!SettingsService.launcherBrowser)
+                    return 0;
+
+                let idx = model.indexOf(SettingsService.launcherBrowser);
+                return idx !== -1 ? idx : 0;
+            }
+            textMap: {
+                let map = {
+                    "system": "System default"
+                };
+                for (let i = 0; i < SettingsService.availableBrowsers.length; i++) {
+                    let browser = SettingsService.availableBrowsers[i];
+                    map[browser.id] = browser.name;
+                }
+                return map;
+            }
+            onActivated: (index) => {
+                let id = model[index];
+                SettingsService.launcherBrowser = id === "system" ? "" : id;
+            }
+        }
+
     }
 
     AppGroup {

@@ -190,7 +190,7 @@ Item {
         } else {
             body = "Break finished. Time to focus for " + focusMinutes + " minutes.";
         }
-        let iconPath = Quickshell.shellDir + "/assets/pomodoro-icon.svg";
+        let iconPath = Quickshell.shellDir + "/assets/alarm.svg";
         // Every value travels as an argument (argv for notify-send, "$1"/"$2" for
         // the sound fallback), so nothing is interpolated into shell code.
         if (notifications) {

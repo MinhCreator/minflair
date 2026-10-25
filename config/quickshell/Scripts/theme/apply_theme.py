@@ -18,7 +18,6 @@ from theme_appliers import (
     qt,
     sddm,
     starship,
-    svg_assets,
 )
 
 
@@ -98,7 +97,6 @@ def main():
     starship.apply(home, colors)
     qt.apply(home, colors)
     btop.apply(home, colors)
-    svg_assets.apply(home, colors)
     lazygit.apply(home, colors)
     obsidian.apply(home, colors)
     sddm.apply(home, colors)

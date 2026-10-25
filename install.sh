@@ -173,16 +173,6 @@ else
   warn "home/ not found in repo, skipping."
 fi
 
-# ── 4.1. quickshell applications ──────────────────────────────────────────────
-log "Installing Quickshell desktop entries..."
-if [ -d "$REPO_DIR/config/quickshell/Applications" ]; then
-  mkdir -p "$HOME/.local/share/applications"
-  cp -a "$REPO_DIR/config/quickshell/Applications/." "$HOME/.local/share/applications/"
-  ok "Quickshell desktop entries copied to ~/.local/share/applications/"
-else
-  warn "config/quickshell/Applications not found, skipping."
-fi
-
 # ── 5. apply GTK theme via gsettings ──────────────────────────────────────────
 log "Installing Material-Gnome theme..."
 if [ ! -d "$HOME/.themes/Material-Gnome" ]; then

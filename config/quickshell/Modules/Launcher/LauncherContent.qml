@@ -3,11 +3,13 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import Quickshell
+import Quickshell.Hyprland
 import Quickshell.Io
 import Quickshell.Widgets
 import qs.Core
 import qs.Core.Components
 import qs.Core.Services
+import qs.Core.Utils
 import qs.Modules.Launcher.Components
 
 Item {
@@ -16,11 +18,39 @@ Item {
     property var widget: null
     property string searchText: ""
     property var allApps: []
-    property var filteredApps: []
+    property var results: []
     property alias initialFocusItem: searchField
     property int maxVisibleItems: 8
     readonly property bool isSearching: searchField.text.trim() !== ""
-    readonly property int currentResultsCount: root.filteredApps ? root.filteredApps.length : 0
+    readonly property string emptyStateText: {
+        let engine = engineForQuery(searchField.text);
+        if (engine)
+            return "Type what to search on " + engine.name;
+
+        return "No results found";
+    }
+    readonly property int currentResultsCount: root.results ? root.results.length : 0
+    readonly property var searchEngines: [{
+        "prefix": "g",
+        "name": "Google",
+        "url": "https://www.google.com/search?q="
+    }, {
+        "prefix": "yt",
+        "name": "YouTube",
+        "url": "https://www.youtube.com/results?search_query="
+    }, {
+        "prefix": "w",
+        "name": "Wikipedia",
+        "url": "https://en.wikipedia.org/w/index.php?search="
+    }, {
+        "prefix": "gh",
+        "name": "GitHub",
+        "url": "https://github.com/search?q="
+    }, {
+        "prefix": "ddg",
+        "name": "DuckDuckGo",
+        "url": "https://duckduckgo.com/?q="
+    }]
     readonly property int targetVisibleItems: {
         if (!isSearching)
             return maxVisibleItems;
@@ -39,8 +69,8 @@ Item {
     readonly property int maxListHeight: (maxVisibleItems * itemHeight) + Math.max(0, (maxVisibleItems - 1) * listSpacing)
     readonly property int baseListHeight: (targetVisibleItems * itemHeight) + Math.max(0, (targetVisibleItems - 1) * listSpacing)
     readonly property int expandedExtraHeight: {
-        if (typeof appsView !== "undefined" && appsView && appsView.expandedIndex >= 0 && root.filteredApps && appsView.expandedIndex < root.filteredApps.length) {
-            let app = root.filteredApps[appsView.expandedIndex];
+        if (typeof appsView !== "undefined" && appsView && appsView.expandedIndex >= 0 && root.results && appsView.expandedIndex < root.results.length) {
+            let app = root.results[appsView.expandedIndex];
             if (app && app.actions && app.actions.length > 0) {
                 let n = app.actions.length;
                 return (n * 34) + Math.max(0, (n - 1) * 4) + Constants.sizeXs;
@@ -60,22 +90,239 @@ Item {
         return Math.min(needed, maxAllowed);
     }
 
-    function filterApps(query) {
-        query = query.toLowerCase();
-        let newFiltered = [];
+    function isMinflairShortcut(app) {
+        return app && app.exec && app.exec.indexOf("open_minflair_") !== -1;
+    }
+
+    function appEntry(app) {
+        return {
+            "type": "app",
+            "name": app.name,
+            "exec": app.exec,
+            "icon": app.icon,
+            "terminal": app.terminal,
+            "actions": app.actions || []
+        };
+    }
+
+    function matchingApps(query) {
+        let out = [];
+        let needle = query.toLowerCase();
         for (let i = 0; i < root.allApps.length; i++) {
             let app = root.allApps[i];
-            if (app.name.toLowerCase().includes(query))
-                newFiltered.push(app);
+            if (isMinflairShortcut(app))
+                continue;
+
+            if (needle !== "" && app.name.toLowerCase().indexOf(needle) === -1)
+                continue;
+
+            out.push(appEntry(app));
+        }
+        return out;
+    }
+
+    function matchingCommands(query) {
+        let out = [];
+        let needle = query.toLowerCase();
+        let list = launcherCommands.items;
+        for (let i = 0; i < list.length; i++) {
+            let command = list[i];
+            let matched = command.name.toLowerCase().indexOf(needle) !== -1;
+            if (!matched) {
+                for (let k = 0; k < command.keywords.length; k++) {
+                    if (command.keywords[k].indexOf(needle) !== -1) {
+                        matched = true;
+                        break;
+                    }
+                }
+            }
+            if (matched)
+                out.push({
+                "type": "command",
+                "name": command.name,
+                "subtitle": command.subtitle,
+                "widgetId": command.widgetId
+            });
 
         }
-        root.filteredApps = newFiltered;
+        return out;
+    }
+
+    function webResult(term, engine) {
+        if (!term || term.length === 0)
+            return null;
+
+        return {
+            "type": "search",
+            "name": term,
+            "subtitle": engine.name,
+            "url": engine.url + encodeURIComponent(term)
+        };
+    }
+
+    function findEngine(token) {
+        let needle = token.toLowerCase();
+        for (let i = 0; i < root.searchEngines.length; i++) {
+            if (root.searchEngines[i].prefix === needle)
+                return root.searchEngines[i];
+
+        }
+        return null;
+    }
+
+    // A search engine only kicks in once a space follows the prefix, so plain
+    // app searches like "w" keep working.
+    function engineForQuery(query) {
+        let parts = String(query).replace(/^\s+/, "").split(/\s+/);
+        if (parts.length < 2)
+            return null;
+
+        return findEngine(parts[0]);
+    }
+
+    function buildResults(query) {
+        let text = query.trim();
+        let out = [];
+        if (text === "") {
+            out = matchingApps("");
+        } else if (text.startsWith(">")) {
+            // Command mode: Minflair applications first, then anything else
+            // is offered as a shell command for kitty.
+            let term = text.substring(1).trim();
+            out = matchingCommands(term);
+            if (out.length === 0 && term.length > 0)
+                out.push({
+                "type": "run",
+                "name": term,
+                "subtitle": "Run in kitty",
+                "command": term
+            });
+
+        } else {
+            // Calculator: only real expressions, never a bare number.
+            if (MathEval.isExpression(text)) {
+                let formatted = MathEval.format(MathEval.evaluate(text));
+                if (formatted !== "")
+                    out.push({
+                    "type": "calculator",
+                    "name": text + " = " + formatted,
+                    "subtitle": "Copy result",
+                    "value": formatted
+                });
+
+            }
+            // Web search only through an explicit prefix (g, yt, w, gh, ddg).
+            let engine = engineForQuery(query);
+            if (engine) {
+                let parts = query.replace(/^\s+/, "").split(/\s+/);
+                let search = webResult(parts.slice(1).join(" ").trim(), engine);
+                if (search)
+                    out.push(search);
+
+            } else {
+                out = out.concat(matchingApps(text));
+            }
+        }
+        root.results = out;
         if (appsView) {
             appsView.expandedIndex = -1;
-            if (root.filteredApps.length > 0)
-                appsView.currentIndex = 0;
-            else
-                appsView.currentIndex = -1;
+            appsView.currentIndex = root.results.length > 0 ? 0 : -1;
+        }
+    }
+
+    function closeLauncher() {
+        AppState.closeAllWidgets();
+        if (root.widget && typeof root.widget.close === "function")
+            root.widget.close();
+        else if (root.widget && root.widget.isOpen !== undefined)
+            root.widget.isOpen = false;
+    }
+
+    function shellQuote(text) {
+        return "'" + String(text).replace(/'/g, "'\\''") + "'";
+    }
+
+    // Launch through the compositor, exactly like the Hyprland keybinds do.
+    // A child started by the shell itself can die together with the closing
+    // window, which is why terminal apps never showed up before.
+    function launchShell(command) {
+        if (!command)
+            return ;
+
+        let request = Hyprland.usingLua ? "hl.dsp.exec_cmd(" + JSON.stringify(command) + ")" : "exec " + command;
+        Hyprland.dispatch(request);
+    }
+
+    function launchApp(exec, terminal) {
+        if (!exec)
+            return ;
+
+        let command = String(exec).trim();
+        if (terminal)
+            command = "kitty -e " + command;
+
+        closeLauncher();
+        launchShell(command);
+    }
+
+    function copyToClipboard(text) {
+        clipboardCopier.command = ["wl-copy", "--", text];
+        clipboardCopier.startDetached();
+    }
+
+    function browserExec() {
+        let list = SettingsService.availableBrowsers || [];
+        let selected = SettingsService.launcherBrowser;
+        if (!selected)
+            return "";
+
+        for (let i = 0; i < list.length; i++) {
+            if (list[i].id === selected)
+                return list[i].exec;
+
+        }
+        return "";
+    }
+
+    function openUrl(url) {
+        if (!url)
+            return ;
+
+        let quoted = shellQuote(url);
+        let exec = browserExec();
+        if (!exec) {
+            launchShell("xdg-open " + quoted);
+            return ;
+        }
+        let command = exec;
+        if (/%[uU]/.test(command))
+            command = command.replace(/%[uU]/g, quoted);
+        else
+            command = command + " " + quoted;
+        // Drop any other field code the desktop entry may carry (%f, %i...).
+        command = command.replace(/%[a-zA-Z]/g, "").trim();
+        launchShell(command);
+    }
+
+    function activateResult(index) {
+        if (index < 0 || index >= root.results.length)
+            return ;
+
+        let item = root.results[index];
+        if (item.type === "calculator") {
+            copyToClipboard(item.value);
+            closeLauncher();
+        } else if (item.type === "command") {
+            closeLauncher();
+            AppState.openWidget(item.widgetId);
+        } else if (item.type === "search") {
+            closeLauncher();
+            openUrl(item.url);
+        } else if (item.type === "run") {
+            closeLauncher();
+            launchShell("kitty --hold -e sh -c " + shellQuote(item.command));
+        } else {
+            launchApp(item.exec, item.terminal);
         }
     }
 
@@ -112,51 +359,19 @@ Item {
             }
         } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
             let idx = appsView.currentIndex >= 0 ? appsView.currentIndex : 0;
-            if (root.filteredApps.length > idx) {
+            if (root.results.length > idx) {
                 if (currentDelegate && currentDelegate.isExpanded && currentDelegate.currentActionIndex >= 0) {
-                    let action = root.filteredApps[idx].actions[currentDelegate.currentActionIndex];
+                    let action = root.results[idx].actions[currentDelegate.currentActionIndex];
                     launchApp(action.exec, false);
                 } else {
-                    let app = root.filteredApps[idx];
-                    launchApp(app.exec, app.terminal);
+                    activateResult(idx);
                 }
                 event.accepted = true;
             }
         } else if (event.key === Qt.Key_Escape) {
-            if (root.widget && typeof root.widget.close === "function")
-                root.widget.close();
-            else if (root.widget && root.widget.isOpen !== undefined)
-                root.widget.isOpen = false;
-            else
-                AppState.activeWidget = "";
+            closeLauncher();
             event.accepted = true;
         }
-    }
-
-    function launchApp(exec, terminal) {
-        if (!exec)
-            return ;
-
-        let command = exec.split(' ').filter(function(arg) {
-            return !arg.startsWith('%');
-        });
-        command = command.map(function(arg) {
-            return arg.replace(/^"|"$/g, '');
-        });
-        if (terminal)
-            command = ["kitty", "-e"].concat(command);
-
-        // Close the launcher first: the island (and the app window loading)
-        // share the same QML thread, so starting the app first makes the
-        // closing animation stutter.
-        AppState.closeAllWidgets();
-        if (root.widget && root.widget.close !== undefined)
-            root.widget.close();
-        else if (root.widget && root.widget.isOpen !== undefined)
-            root.widget.isOpen = false;
-        appLauncher.running = false;
-        appLauncher.command = command;
-        appLauncher.startDetached();
     }
 
     function resetLauncher() {
@@ -166,7 +381,7 @@ Item {
         searchField.text = "";
         if (AppState.launcherApps && AppState.launcherApps.length > 0) {
             root.allApps = AppState.launcherApps;
-            filterApps("");
+            buildResults("");
         } else {
             loadAppsProc.running = true;
         }
@@ -191,7 +406,7 @@ Item {
                     let parsed = JSON.parse(appFetcherOutput.text);
                     AppState.launcherApps = parsed;
                     root.allApps = parsed;
-                    filterApps("");
+                    buildResults(searchField.text);
                 } catch (e) {
                     console.error("Error parsing apps JSON: " + e);
                 }
@@ -225,8 +440,8 @@ Item {
             GhostEmptyState {
                 anchors.centerIn: parent
                 visible: opacity > 0.001
-                opacity: (root.filteredApps.length === 0 && root.isSearching) ? 1 : 0
-                text: "No applications found"
+                opacity: (root.results.length === 0 && root.isSearching) ? 1 : 0
+                text: root.emptyStateText
                 isAnimating: visible
 
                 Behavior on opacity {
@@ -254,13 +469,13 @@ Item {
                 anchors.fill: parent
                 clip: true
                 boundsBehavior: Flickable.StopAtBounds
-                model: root.filteredApps
+                model: root.results
                 spacing: root.listSpacing
                 currentIndex: -1
                 highlightResizeDuration: 0
                 highlightMoveDuration: Constants.animFast
                 highlightFollowsCurrentItem: true
-                visible: root.filteredApps.length > 0
+                visible: root.results.length > 0
                 Keys.onPressed: function(event) {
                     root.handleKeyPress(event, false);
                 }
@@ -315,6 +530,9 @@ Item {
                     onLaunchRequested: function(execCmd, terminalFlag) {
                         root.launchApp(execCmd, terminalFlag);
                     }
+                    onActivateRequested: {
+                        root.activateResult(index);
+                    }
                 }
 
                 ScrollBar.vertical: ScrollBar {
@@ -342,9 +560,9 @@ Item {
         parent: SettingsService.barConvexMode ? bottomSearchContainer : topSearchContainer
         anchors.fill: parent
         preferredHeight: Constants.size4Xl
-        placeholderText: "Search applications..."
+        placeholderText: "Search apps, > commands or math..."
         onSearchRequested: (text) => {
-            return root.filterApps(text);
+            return root.buildResults(text);
         }
         customSize: Constants.sizeMd
         textField.Keys.onPressed: function(event) {
@@ -353,7 +571,11 @@ Item {
     }
 
     Process {
-        id: appLauncher
+        id: clipboardCopier
+    }
+
+    LauncherCommands {
+        id: launcherCommands
     }
 
 }

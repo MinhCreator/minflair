@@ -1,8 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=Minflair Pomodoro
-Comment=Focus timer with automatic breaks
-Exec=sh -c $HOME/.config/quickshell/Modules/Pomodoro/scripts/open_minflair_pomodoro.sh
-Icon=$HOME/.config/quickshell/assets/pomodoro-icon.svg
-Terminal=false
-Categories=Utility;Office;

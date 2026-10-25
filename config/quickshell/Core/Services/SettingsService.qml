@@ -15,6 +15,8 @@ Item {
     property string githubToken: ""
     property string musicPlayer: "none"
     property string musicPlayerCommand: ""
+    property var availableBrowsers: []
+    property string launcherBrowser: ""
     property bool isSettingsLoading: settingsLoader.running
     property string quoteCategory: "All"
     property string fontFamily: "Geist"
@@ -61,8 +63,27 @@ Item {
         applyFontProc.running = true;
     }
 
+    // Drops a saved browser that is no longer installed, falling back to the
+    // system default instead of opening a stale command.
+    function syncLauncherBrowser() {
+        if (!launcherBrowser)
+            return ;
+
+        let list = availableBrowsers || [];
+        if (list.length === 0)
+            return ;
+
+        for (let i = 0; i < list.length; i++) {
+            if (list[i].id === launcherBrowser)
+                return ;
+
+        }
+        launcherBrowser = "";
+    }
+
     Component.onCompleted: {
         load();
+        browsersProc.running = true;
     }
     onClipboardMaxItemsChanged: {
         if (settingsLoaded)
@@ -90,6 +111,11 @@ Item {
 
     }
     onMusicPlayerCommandChanged: {
+        if (settingsLoaded)
+            saveSettings();
+
+    }
+    onLauncherBrowserChanged: {
         if (settingsLoaded)
             saveSettings();
 
@@ -192,6 +218,7 @@ Item {
                 "githubToken": settingsService.githubToken,
                 "musicPlayer": settingsService.musicPlayer,
                 "musicPlayerCommand": settingsService.musicPlayerCommand,
+                "launcherBrowser": settingsService.launcherBrowser,
                 "nightLightActive": DisplayProfileService.nightLightActive,
                 "caffeineActive": DisplayProfileService.caffeineActive,
                 "gameModeActive": DisplayProfileService.gameModeActive,
@@ -288,6 +315,9 @@ chmod 644 /var/tmp/sddm-theme/settings_prefs.json || true"];
 
                         if (prefs.musicPlayerCommand !== undefined)
                             settingsService.musicPlayerCommand = prefs.musicPlayerCommand;
+
+                        if (prefs.launcherBrowser !== undefined)
+                            settingsService.launcherBrowser = prefs.launcherBrowser;
 
                         if (prefs.nightLightActive !== undefined)
                             DisplayProfileService.nightLightActive = prefs.nightLightActive;
@@ -409,6 +439,7 @@ chmod 644 /var/tmp/sddm-theme/settings_prefs.json || true"];
                 settingsService.applyFont(settingsService.fontFamily, Math.round(11 * settingsService.fontScale));
             }
             settingsService.settingsLoaded = true;
+            settingsService.syncLauncherBrowser();
             HyprlandService.triggerStartupTimer();
         }
 
@@ -420,6 +451,31 @@ chmod 644 /var/tmp/sddm-theme/settings_prefs.json || true"];
 
     Process {
         id: settingsSaver
+    }
+
+    Process {
+        id: browsersProc
+
+        command: ["python3", Quickshell.shellDir + "/Modules/Launcher/scripts/get_browsers.py"]
+        onExited: function(exitCode) {
+            if (exitCode !== 0)
+                return ;
+
+            try {
+                let parsed = JSON.parse(browsersOutput.text ? browsersOutput.text.trim() : "[]");
+                if (Array.isArray(parsed)) {
+                    settingsService.availableBrowsers = parsed;
+                    settingsService.syncLauncherBrowser();
+                }
+            } catch (e) {
+                console.error("Error parsing browsers JSON: " + e);
+            }
+        }
+
+        stdout: StdioCollector {
+            id: browsersOutput
+        }
+
     }
 
     Process {
