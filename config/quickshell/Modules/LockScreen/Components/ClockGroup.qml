@@ -111,7 +111,7 @@ ColumnLayout {
             anchors.fill: musicPillBg
             radius: musicPillBg.radius
             active: true
-            opacity: Theme.isDark ? 0.5 : 0.25
+            opacity: Theme.isDark ? 0.6 : 0.3
         }
 
         Rectangle {
@@ -119,7 +119,8 @@ ColumnLayout {
 
             anchors.fill: parent
             radius: height / 2
-            color: Theme.bg
+            // Same translucent surface as the password card
+            color: Qt.rgba(Theme.bg.r, Theme.bg.g, Theme.bg.b, Theme.bg.a * 0.45)
             border.color: Theme.border
             border.width: 1
 

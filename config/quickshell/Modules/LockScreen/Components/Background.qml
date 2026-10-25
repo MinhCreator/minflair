@@ -72,34 +72,4 @@ Rectangle {
         opacity: 0.7
     }
 
-    Item {
-        anchors.fill: parent
-        opacity: 0.03
-
-        Repeater {
-            model: Math.ceil(parent.width / (Constants.size5Xl * 1.5))
-
-            Rectangle {
-                x: index * (Constants.size5Xl * 1.5)
-                width: 1
-                height: parent.height
-                color: Theme.muted
-            }
-
-        }
-
-        Repeater {
-            model: Math.ceil(parent.height / (Constants.size5Xl * 1.5))
-
-            Rectangle {
-                y: index * (Constants.size5Xl * 1.5)
-                width: parent.width
-                height: 1
-                color: Theme.muted
-            }
-
-        }
-
-    }
-
 }

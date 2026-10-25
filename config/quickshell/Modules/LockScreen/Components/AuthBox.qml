@@ -119,7 +119,8 @@ Item {
 
         anchors.fill: parent
         radius: Constants.size2Xl
-        color: Theme.bg
+        // Translucent surface so the blurred wallpaper stays visible behind the card
+        color: Qt.rgba(Theme.bg.r, Theme.bg.g, Theme.bg.b, Theme.bg.a * 0.45)
         border.color: rootBox.authFailed ? Theme.accentComplementary : (passwordInput.activeFocus ? Theme.accent : Theme.border)
         border.width: 1
 
@@ -276,7 +277,7 @@ Item {
             Layout.fillWidth: true
             Layout.preferredHeight: 46
             radius: Constants.sizeLg
-            color: passwordInput.activeFocus ? (Theme.isDark ? Theme.bgSecondary : Theme.bg) : (Theme.isDark ? Theme.bgTertiary : Theme.bg)
+            color: Theme.bgSecondary
             border.color: rootBox.authFailed ? Theme.accentComplementary : (passwordInput.activeFocus ? Theme.accent : Theme.border)
             border.width: passwordInput.activeFocus ? 2 : 1
 

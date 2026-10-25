@@ -14,6 +14,23 @@ except ImportError:
     from theme_extractors.image_utils import prepare_image
 
 
+def _argb(rgb, alpha):
+    """Build a QML #AARRGGBB color from an #RRGGBB color and an opacity (0-1).
+
+    SDDM's QML theme composites its surfaces over the blurred wallpaper, so the
+    derived overlays must keep their alpha instead of being flattened onto the
+    background (which is what apply_theme.py does for text-only appliers).
+    """
+    s = str(rgb).lstrip("#")
+    if len(s) == 8:  # Qt ARGB format: keep only the RGB part
+        s = s[-6:]
+    elif len(s) == 3:
+        s = "".join(ch * 2 for ch in s)
+    s = s[-6:]
+    a = max(0, min(255, int(round(alpha * 255))))
+    return f"#{a:02x}{s}"
+
+
 def apply(home, colors):
     sddm_dir = "/var/tmp/sddm-theme"
     try:
@@ -35,28 +52,35 @@ def apply(home, colors):
             except Exception:
                 pass
 
-        # Prepare color map with sanitized hex colors
+        is_dark = bool(colors.get("is_dark", True))
+        fg = sanitize_color(colors.get("fg", "#f1f0f4"))
+        accent = sanitize_color(colors.get("accent", "#8265cc"))
+        accent_complementary = sanitize_color(
+            colors.get("accentComplementary", "#cc64c8")
+        )
+        overlay_base = sanitize_color(colors.get("overlayBase", "#a38fd8"))
+
+        # Prepare color map. Opaque colors are sanitized; surfaces that float
+        # over the wallpaper keep their alpha so they stay translucent.
         theme_data = {
             "font": font_family,
             "name": "Dynamic Tokyo Night",
             "bg": sanitize_color(colors.get("bg", "#09080b")),
             "opaqueBg": sanitize_color(colors.get("opaqueBg", "#09080b")),
-            "fg": sanitize_color(colors.get("fg", "#f1f0f4")),
-            "muted": sanitize_color(colors.get("muted", "#66f1f0f4")),
-            "border": sanitize_color(colors.get("border", "#1af1f0f4")),
-            "accent": sanitize_color(colors.get("accent", "#8265cc")),
-            "accentComplementary": sanitize_color(
-                colors.get("accentComplementary", "#cc64c8")
+            "fg": fg,
+            "muted": _argb(fg, 0.40),
+            "border": _argb(fg, 0.10 if is_dark else 0.20),
+            "accent": accent,
+            "accentComplementary": accent_complementary,
+            "overlayBase": overlay_base,
+            "bgSecondary": _argb(overlay_base, 0.06 if is_dark else 0.10),
+            "bgTertiary": _argb(overlay_base, 0.02 if is_dark else 0.04),
+            "bgAccent": _argb(accent, 0.15 if is_dark else 0.30),
+            "bgAccentComplementary": _argb(
+                accent_complementary, 0.15 if is_dark else 0.30
             ),
-            "overlayBase": sanitize_color(colors.get("overlayBase", "#a38fd8")),
-            "bgSecondary": sanitize_color(colors.get("bgSecondary", "#0fa38fd8")),
-            "bgTertiary": sanitize_color(colors.get("bgTertiary", "#05a38fd8")),
-            "bgAccent": sanitize_color(colors.get("bgAccent", "#268265cc")),
-            "bgAccentComplementary": sanitize_color(
-                colors.get("bgAccentComplementary", "#26cc64c8")
-            ),
-            "shadow": sanitize_color(colors.get("shadow", "#bf000000")),
-            "isDark": bool(colors.get("is_dark", True)),
+            "shadow": _argb("#000000", 0.75 if is_dark else 0.45),
+            "isDark": is_dark,
         }
 
         colors_file = os.path.join(sddm_dir, "colorscheme.json")
