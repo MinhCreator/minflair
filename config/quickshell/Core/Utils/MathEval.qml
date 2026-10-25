@@ -28,6 +28,14 @@ QtObject {
 
     // Recursive descent parser: no eval(), no Function().
     function evaluate(expression) {
+        // Declared before the nested parsers so they never read a binding that
+        // is only initialised further down (qt.qml.usedbeforedeclared).
+        let text = String(expression).replace(/\s+/g, "");
+        if (text.length === 0)
+            return null;
+
+        let pos = 0;
+
         function eat(token) {
             if (text.charAt(pos) === token) {
                 pos++;
@@ -104,27 +112,29 @@ QtObject {
             if (value === null)
                 return null;
 
-            while (true) if (eat("*")) {
-                let right = parsePower();
-                if (right === null)
-                    return null;
+            while (true)
+                if (eat("*")) {
+                    let right = parsePower();
+                    if (right === null)
+                        return null;
 
-                value *= right;
-            } else if (eat("/")) {
-                let right = parsePower();
-                if (right === null || right === 0)
-                    return null;
+                    value *= right;
+                } else if (eat("/")) {
+                    let right = parsePower();
+                    if (right === null || right === 0)
+                        return null;
 
-                value /= right;
-            } else if (eat("%")) {
-                let right = parsePower();
-                if (right === null || right === 0)
-                    return null;
+                    value /= right;
+                } else if (eat("%")) {
+                    let right = parsePower();
+                    if (right === null || right === 0)
+                        return null;
 
-                value %= right;
-            } else {
-                break;
-            }
+                    value %= right;
+                } else {
+                    break;
+                }
+
             return value;
         }
 
@@ -133,29 +143,26 @@ QtObject {
             if (value === null)
                 return null;
 
-            while (true) if (eat("+")) {
-                let right = parseTerm();
-                if (right === null)
-                    return null;
+            while (true)
+                if (eat("+")) {
+                    let right = parseTerm();
+                    if (right === null)
+                        return null;
 
-                value += right;
-            } else if (eat("-")) {
-                let right = parseTerm();
-                if (right === null)
-                    return null;
+                    value += right;
+                } else if (eat("-")) {
+                    let right = parseTerm();
+                    if (right === null)
+                        return null;
 
-                value -= right;
-            } else {
-                break;
-            }
+                    value -= right;
+                } else {
+                    break;
+                }
+
             return value;
         }
 
-        let text = String(expression).replace(/\s+/g, "");
-        if (text.length === 0)
-            return null;
-
-        let pos = 0;
         let result = parseExpression();
         if (result === null || pos !== text.length || !isFinite(result))
             return null;
