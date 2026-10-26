@@ -17,7 +17,7 @@ Rectangle {
     Layout.preferredHeight: Constants.size3Xl
     radius: Constants.sizeXs
     scale: tapHandler.pressed ? 0.98 : 1
-    color: isActive ? Theme.bgSecondary : (hoverHandler.hovered ? Theme.border : "transparent")
+    color: (isActive || hoverHandler.hovered) ? Theme.bgSecondary : "transparent"
     border.color: isActive ? Theme.border : "transparent"
     border.width: 1
 
