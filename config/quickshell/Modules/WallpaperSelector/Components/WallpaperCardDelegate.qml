@@ -74,12 +74,12 @@ Item {
 
                     GradientStop {
                         position: 0.35
-                        color: Qt.rgba(0, 0, 0, 0.35)
+                        color: Qt.rgba(Theme.black.r, Theme.black.g, Theme.black.b, 0.35)
                     }
 
                     GradientStop {
                         position: 1
-                        color: Qt.rgba(0, 0, 0, 0.85)
+                        color: Qt.rgba(Theme.black.r, Theme.black.g, Theme.black.b, 0.85)
                     }
 
                 }
