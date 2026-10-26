@@ -75,7 +75,7 @@ Card {
                         to: 360
                         duration: Constants.animUltraSlow * 2
                         loops: Animation.Infinite
-                        running: GithubService.isFetching
+                        running: GithubService.isFetching && Constants.durationFactor > 0
                         onRunningChanged: {
                             if (!running)
                                 gradientRing.rotation = 0;

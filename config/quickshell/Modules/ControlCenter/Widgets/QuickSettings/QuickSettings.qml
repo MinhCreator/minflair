@@ -235,7 +235,7 @@ Item {
                         to: 360
                         duration: Constants.animExpressive * 2
                         loops: Animation.Infinite
-                        running: wifiControl.isScanning
+                        running: wifiControl.isScanning && Constants.durationFactor > 0
                     }
 
                 }
@@ -308,7 +308,7 @@ Item {
                         to: 360
                         duration: Constants.animExpressive * 2
                         loops: Animation.Infinite
-                        running: btControl.isScanning
+                        running: btControl.isScanning && Constants.durationFactor > 0
                     }
 
                 }

@@ -68,7 +68,7 @@ ColumnLayout {
                             to: 360
                             duration: Constants.animExpressive * 2
                             loops: Animation.Infinite
-                            running: managerRoot.isSearching
+                            running: managerRoot.isSearching && Constants.durationFactor > 0
                         }
 
                     }

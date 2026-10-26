@@ -105,7 +105,7 @@ Card {
                         to: 360
                         duration: Constants.animExpressive * 2
                         loops: Animation.Infinite
-                        running: root.isUpdating || root.isChecking
+                        running: (root.isUpdating || root.isChecking) && Constants.durationFactor > 0
                         onRunningChanged: {
                             if (!running)
                                 statusIcon.rotation = 0;

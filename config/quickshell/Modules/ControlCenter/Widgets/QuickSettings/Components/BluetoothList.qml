@@ -71,7 +71,7 @@ Rectangle {
                 to: 360
                 duration: Constants.animExpressive * 2
                 loops: Animation.Infinite
-                running: root.expanded && root.isScanning && root.btList.length === 0
+                running: root.expanded && root.isScanning && root.btList.length === 0 && Constants.durationFactor > 0
             }
 
         }

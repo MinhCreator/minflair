@@ -23,7 +23,7 @@ ColumnLayout {
         Layout.alignment: Qt.AlignHCenter
 
         SequentialAnimation {
-            running: root.isAnimating
+            running: root.isAnimating && Constants.durationFactor > 0
             loops: Animation.Infinite
 
             NumberAnimation {
@@ -63,7 +63,7 @@ ColumnLayout {
         Layout.alignment: Qt.AlignHCenter
 
         SequentialAnimation {
-            running: root.isAnimating
+            running: root.isAnimating && Constants.durationFactor > 0
             loops: Animation.Infinite
 
             PauseAnimation {

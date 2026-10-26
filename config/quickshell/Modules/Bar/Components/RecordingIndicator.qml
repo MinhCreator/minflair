@@ -119,7 +119,7 @@ Item {
                         anchors.verticalCenter: parent.verticalCenter
 
                         SequentialAnimation on opacity {
-                            running: RecorderService.running
+                            running: RecorderService.running && Constants.durationFactor > 0
                             loops: Animation.Infinite
 
                             NumberAnimation {

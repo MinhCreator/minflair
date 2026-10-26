@@ -438,7 +438,7 @@ Item {
                             to: 360
                             duration: Constants.animExpressive * 2
                             loops: Animation.Infinite
-                            running: rootBox.authenticating
+                            running: rootBox.authenticating && Constants.durationFactor > 0
                         }
 
                     }
