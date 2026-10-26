@@ -20,11 +20,14 @@ PanelWindow {
     property real currentBarMarginSide: barSurface.barMarginSide
     property real currentBarHeight: barSurface.barHeight
     readonly property var styleData: BarStyleConfig.styleOf(activeBarStyle)
+    // Game Mode is handled by its own surfaces. The window stays mapped and
+    // deactivates its content through the mask instead of becoming invisible.
+    readonly property bool isGameMode: DisplayProfileService.gameModeActive
     readonly property bool hasFrame: styleData.hasFrame
-    readonly property bool hasExpandableHost: styleData.hasExpandableHost
+    readonly property bool hasExpandableHost: styleData.hasExpandableHost && !root.isGameMode
     readonly property bool usesFloatingPopups: styleData.usesFloatingPopups
-    readonly property bool isPill: styleData.isPill
-    readonly property QtObject activeHost: SettingsService.barIslandMode ? barStrip : null
+    readonly property bool isPill: styleData.isPill && !root.isGameMode
+    readonly property QtObject activeHost: (SettingsService.barIslandMode && !root.isGameMode) ? barStrip : null
     readonly property bool needsFocus: (activeHost && activeHost.isOpen && activeHost.needsFocus)
 
     function triggerStyleSwitch() {

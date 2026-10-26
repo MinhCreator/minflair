@@ -9,11 +9,15 @@ Item {
 
     property bool hasFullscreen: false
     property int barHeight: Constants.size4Xl
-    property int bezelSize: DisplayProfileService.gameModeActive ? 0 : Constants.sizeXs
+    property int bezelSize: Constants.sizeXs
     property bool isExiting: false
     readonly property bool isExclusionActive: !DisplayProfileService.gameModeActive && SettingsService.barConvexMode && !root.hasFullscreen && !root.isExiting
 
     PanelWindow {
+        // Keep the surface mapped so style switches never destroy a layer
+        // window (Quickshell can crash while tearing one down). Visibility is
+        // controlled through the exclusive zone and the empty mask.
+
         id: bottomExclusion
 
         anchors.bottom: true
@@ -24,9 +28,6 @@ Item {
         focusable: false
         WlrLayershell.exclusiveZone: root.isExclusionActive ? root.bezelSize : 0
         implicitHeight: root.bezelSize
-        // Keep the surface mapped so style switches never destroy a layer
-        // window (Quickshell can crash while tearing one down).
-        visible: root.bezelSize > 0
 
         mask: Region {
         }
@@ -44,7 +45,6 @@ Item {
         focusable: false
         WlrLayershell.exclusiveZone: root.isExclusionActive ? root.bezelSize : 0
         implicitWidth: root.bezelSize
-        visible: root.bezelSize > 0
 
         mask: Region {
         }
@@ -62,7 +62,6 @@ Item {
         focusable: false
         WlrLayershell.exclusiveZone: root.isExclusionActive ? root.bezelSize : 0
         implicitWidth: root.bezelSize
-        visible: root.bezelSize > 0
 
         mask: Region {
         }

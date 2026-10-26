@@ -15,11 +15,11 @@ PanelWindow {
     required property var notificationService
     property bool isShellReady: false
     property string activeBarStyle: "convex"
-    readonly property bool isConvexMode: SettingsService.barConvexMode
+    readonly property bool isConvexMode: SettingsService.barConvexMode && !DisplayProfileService.gameModeActive
     readonly property bool isExiting: !isConvexMode
     property int barHeight: BarStyleConfig.barHeight("convex")
     property real animatedBarHeight: barHeight
-    property int bezelSize: DisplayProfileService.gameModeActive ? 0 : Constants.sizeXs
+    property int bezelSize: Constants.sizeXs
     property bool hasFullscreen: (Hyprland.focusedWorkspace && Hyprland.focusedWorkspace.hasFullscreen) ? HyprlandService.isTrueFullscreen : false
     property real fsTransitionProg: hasFullscreen ? 0 : 1
     readonly property bool needsFocus: root.isConvexMode && AppState.isFocusWidgetOpen && convexPanels.hasAnyDrawerOpen

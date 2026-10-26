@@ -27,18 +27,21 @@ PanelWindow {
     readonly property int barHeight: Constants.gamingBarHeight
     readonly property int widgetOffset: barHeight + 8
     readonly property int edgeSpacing: 8
-    readonly property bool isControlCenter: AppState.isWidgetOpen("controlCenter")
-    readonly property bool isNotificationsCenter: AppState.isWidgetOpen("notificationsCenter")
-    readonly property bool isDashboard: AppState.isWidgetOpen("dashboard")
-    readonly property bool isMusic: AppState.isWidgetOpen("music")
-    readonly property bool isCalendar: AppState.isWidgetOpen("calendar")
-    readonly property bool isSystemUsage: AppState.isWidgetOpen("systemUsage")
-    readonly property bool isLauncher: AppState.isWidgetOpen("launcher")
-    readonly property bool isClipboard: AppState.isWidgetOpen("clipboard")
-    readonly property bool isWallpaper: AppState.isWidgetOpen("wallpaper")
-    readonly property bool isPowerMenu: AppState.isWidgetOpen("powerMenu")
-    readonly property bool isScreenshot: AppState.isWidgetOpen("screenshot")
-    readonly property bool isTray: (AppState.activeWidget || "").startsWith("systemTray_")
+    // The window stays mapped and only activates its content in Game Mode, so
+    // entering/leaving the profile never destroys the layer surface.
+    readonly property bool isActive: DisplayProfileService.gameModeActive
+    readonly property bool isControlCenter: root.isActive && AppState.isWidgetOpen("controlCenter")
+    readonly property bool isNotificationsCenter: root.isActive && AppState.isWidgetOpen("notificationsCenter")
+    readonly property bool isDashboard: root.isActive && AppState.isWidgetOpen("dashboard")
+    readonly property bool isMusic: root.isActive && AppState.isWidgetOpen("music")
+    readonly property bool isCalendar: root.isActive && AppState.isWidgetOpen("calendar")
+    readonly property bool isSystemUsage: root.isActive && AppState.isWidgetOpen("systemUsage")
+    readonly property bool isLauncher: root.isActive && AppState.isWidgetOpen("launcher")
+    readonly property bool isClipboard: root.isActive && AppState.isWidgetOpen("clipboard")
+    readonly property bool isWallpaper: root.isActive && AppState.isWidgetOpen("wallpaper")
+    readonly property bool isPowerMenu: root.isActive && AppState.isWidgetOpen("powerMenu")
+    readonly property bool isScreenshot: root.isActive && AppState.isWidgetOpen("screenshot")
+    readonly property bool isTray: root.isActive && (AppState.activeWidget || "").startsWith("systemTray_")
     readonly property bool hasAnyOpen: isControlCenter || isNotificationsCenter || isDashboard || isMusic || isCalendar || isSystemUsage || isLauncher || isClipboard || isWallpaper || isPowerMenu || isScreenshot || isTray
     readonly property bool needsFocus: isLauncher || isClipboard || isWallpaper || isPowerMenu || isScreenshot
     readonly property int activeTrayIndex: {
@@ -125,7 +128,7 @@ PanelWindow {
     WlrLayershell.keyboardFocus: needsFocus ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
     focusable: needsFocus
     color: "transparent"
-    visible: SettingsService.settingsLoaded && DisplayProfileService.gameModeActive && root.hasAnyOpen
+    visible: SettingsService.settingsLoaded
     onIsLauncherChanged: {
         if (isLauncher) {
             if (launcherContent && typeof launcherContent.resetLauncher === "function")

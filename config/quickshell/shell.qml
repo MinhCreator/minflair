@@ -69,10 +69,13 @@ ShellRoot {
         readonly property int barMarginSide: BarStyleConfig.barMarginSide(SettingsService.barStyle)
 
         WlrLayershell.layer: WlrLayer.Top
+        // Game Mode has its own bar and exclusive zone. This metrics-only
+        // surface must not reserve space on top of the gaming bar.
+        WlrLayershell.exclusionMode: root.isGaming ? ExclusionMode.Ignore : ExclusionMode.Auto
         color: "transparent"
         focusable: false
         implicitHeight: !SettingsService.settingsLoaded ? 0 : (barMarginTop + barHeight)
-        visible: SettingsService.settingsLoaded && !root.isGaming
+        visible: SettingsService.settingsLoaded
 
         anchors {
             top: true
@@ -89,11 +92,11 @@ ShellRoot {
         id: gamingBarSurface
 
         WlrLayershell.layer: WlrLayer.Top
-        WlrLayershell.exclusiveZone: Constants.gamingBarHeight
-        color: Theme.bg
+        WlrLayershell.exclusiveZone: root.isGaming ? Constants.gamingBarHeight : 0
+        color: root.isGaming ? Theme.bg : "transparent"
         focusable: false
         implicitHeight: Constants.gamingBarHeight
-        visible: SettingsService.settingsLoaded && root.isGaming
+        visible: SettingsService.settingsLoaded
 
         anchors {
             top: true
@@ -104,6 +107,18 @@ ShellRoot {
         GamingBar {
             anchors.fill: parent
             notificationService: globalNotificationService
+            visible: root.isGaming
+            enabled: root.isGaming
+        }
+
+        mask: Region {
+            Region {
+                x: 0
+                y: 0
+                width: root.isGaming ? gamingBarSurface.width : 0
+                height: root.isGaming ? Constants.gamingBarHeight : 0
+            }
+
         }
 
     }
@@ -115,14 +130,14 @@ ShellRoot {
     BarOverlayWindow {
         notificationService: globalNotificationService
         barSurface: barSurface
-        visible: SettingsService.settingsLoaded && !root.isGaming
+        visible: SettingsService.settingsLoaded
     }
 
     ConvexDesktop {
         id: convexDesktopSurface
 
         notificationService: globalNotificationService
-        visible: SettingsService.settingsLoaded && !root.isGaming
+        visible: SettingsService.settingsLoaded
     }
 
     GamingOverlay {
