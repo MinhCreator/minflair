@@ -204,7 +204,7 @@ PanelWindow {
 
     MouseArea {
         anchors.fill: parent
-        anchors.topMargin: 34
+        anchors.topMargin: root.barHeight
         enabled: root.hasAnyOpen
         focus: root.needsFocus
         Keys.onEscapePressed: {
@@ -611,9 +611,9 @@ PanelWindow {
     mask: Region {
         Region {
             x: 0
-            y: 34
+            y: root.barHeight
             width: root.hasAnyOpen ? root.width : 0
-            height: root.hasAnyOpen ? Math.max(0, root.height - 34) : 0
+            height: root.hasAnyOpen ? Math.max(0, root.height - root.barHeight) : 0
         }
 
     }

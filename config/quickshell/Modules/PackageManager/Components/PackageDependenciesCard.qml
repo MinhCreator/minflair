@@ -73,7 +73,7 @@ Card {
                         implicitWidth: depRow.implicitWidth + Constants.sizeSm * 2
                         implicitHeight: depRow.implicitHeight + Constants.sizeXs * 2
                         radius: Constants.sizeXs
-                        color: Theme.bgSecondary
+                        color: Theme.bgTertiary
                         border.width: 1
                         border.color: Theme.border
 
@@ -132,7 +132,7 @@ Card {
                         implicitWidth: makeRow.implicitWidth + Constants.sizeSm * 2
                         implicitHeight: makeRow.implicitHeight + Constants.sizeXs * 2
                         radius: Constants.sizeXs
-                        color: Theme.bgSecondary
+                        color: Theme.bgTertiary
                         border.width: 1
                         border.color: Theme.border
 
@@ -184,7 +184,7 @@ Card {
                         implicitWidth: optRow.implicitWidth + Constants.sizeSm * 2
                         implicitHeight: optRow.implicitHeight + Constants.sizeXs * 2
                         radius: Constants.sizeXs
-                        color: Theme.bgSecondary
+                        color: Theme.bgTertiary
                         border.width: 1
                         border.color: Theme.border
 

@@ -1,4 +1,5 @@
 import QtQuick
+import qs.Core
 import qs.Core.Services
 pragma Singleton
 
@@ -32,7 +33,7 @@ QtObject {
 
     function barHeight(style) {
         if (style === "gaming")
-            return 36;
+            return Constants.gamingBarHeight;
 
         if (style === "island")
             return 32;

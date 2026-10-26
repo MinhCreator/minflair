@@ -24,7 +24,7 @@ SettingRowTemplate {
         implicitHeight: Constants.size3Xl
         implicitWidth: row.implicitWidth
         radius: Constants.sizeXs
-        color: Theme.bgSecondary
+        color: Theme.bgTertiary
         border.width: 1
         border.color: Theme.border
 

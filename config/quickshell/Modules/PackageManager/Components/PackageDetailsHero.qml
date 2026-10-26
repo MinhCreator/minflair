@@ -88,7 +88,7 @@ Card {
                     radius: Constants.sizeXs
                     implicitHeight: Constants.size2Xl
                     implicitWidth: versionText.implicitWidth + Constants.sizeMd
-                    color: Theme.bgSecondary
+                    color: Theme.bgTertiary
                     border.color: Theme.border
                     border.width: 1
                     Layout.alignment: Qt.AlignVCenter
@@ -111,7 +111,7 @@ Card {
                     radius: Constants.sizeXs
                     implicitHeight: Constants.size2Xl
                     implicitWidth: statusLayout.implicitWidth + 14
-                    color: heroRoot.isInstalled ? Theme.bgAccent : (isOutOfDate ? Theme.bgAccentComplementary : Theme.bgSecondary)
+                    color: heroRoot.isInstalled ? Theme.bgAccent : (isOutOfDate ? Theme.bgAccentComplementary : Theme.bgTertiary)
                     border.color: heroRoot.isInstalled ? "transparent" : (isOutOfDate ? "transparent" : Theme.border)
                     border.width: 1
                     Layout.alignment: Qt.AlignVCenter
@@ -228,7 +228,7 @@ Card {
                     implicitHeight: Constants.size2Xl
                     implicitWidth: sizeTagText.implicitWidth + 14
                     radius: Constants.sizeXs
-                    color: Theme.bgSecondary
+                    color: Theme.bgTertiary
                     border.color: Theme.border
                     border.width: 1
 
@@ -249,7 +249,7 @@ Card {
                     implicitHeight: Constants.size2Xl
                     implicitWidth: licenseTagText.implicitWidth + 14
                     radius: Constants.sizeXs
-                    color: Theme.bgSecondary
+                    color: Theme.bgTertiary
                     border.color: Theme.border
                     border.width: 1
 
@@ -270,7 +270,7 @@ Card {
                     implicitHeight: Constants.size2Xl
                     implicitWidth: archTagText.implicitWidth + Constants.sizeMd
                     radius: Constants.sizeXs
-                    color: Theme.bgSecondary
+                    color: Theme.bgTertiary
                     border.color: Theme.border
                     border.width: 1
 

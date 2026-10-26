@@ -295,7 +295,7 @@ Item {
                 Layout.alignment: Qt.AlignVCenter
                 height: Constants.sizeLg + 4
                 radius: height / 2
-                color: Theme.bgSecondary
+                color: Theme.bgTertiary
                 border.width: 1
                 border.color: OsdService.isMuted ? Theme.border : Theme.accent
                 implicitWidth: badgeLabel.implicitWidth + Constants.sizeSm

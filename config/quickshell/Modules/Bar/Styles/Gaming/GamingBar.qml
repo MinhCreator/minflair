@@ -98,7 +98,7 @@ Item {
         anchors.centerIn: parent
         height: Constants.size2Xl + 4
         width: Math.max(70, clockContent.implicitWidth + 24)
-        color: AppState.isWidgetOpen("dashboard") ? Theme.bgAccent : (clockMouse.containsMouse ? Theme.bgTertiary : Theme.bgSecondary)
+        color: AppState.isWidgetOpen("dashboard") ? Theme.bgAccent : (clockMouse.containsMouse ? Theme.bgSecondary : Theme.bgTertiary)
         radius: 0
         border.width: 1
         border.color: Theme.border
@@ -139,7 +139,7 @@ Item {
             anchors.verticalCenter: parent.verticalCenter
             height: Constants.size2Xl + 4
             width: Math.max(64, statusControlsRow.implicitWidth + 12)
-            color: Theme.bgSecondary
+            color: Theme.bgTertiary
             radius: 0
             border.width: 1
             border.color: Theme.border
