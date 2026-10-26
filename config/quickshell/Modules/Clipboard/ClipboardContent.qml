@@ -247,7 +247,7 @@ Item {
 
                 Behavior on opacity {
                     NumberAnimation {
-                        duration: Constants.animFast + 30
+                        duration: Math.round(180 * Constants.durationFactor)
                         easing.type: Easing.OutQuad
                     }
 
@@ -255,7 +255,7 @@ Item {
 
                 Behavior on x {
                     NumberAnimation {
-                        duration: Constants.animFast + 30
+                        duration: Math.round(180 * Constants.durationFactor)
                         easing.type: Easing.OutCubic
                     }
 
@@ -263,7 +263,7 @@ Item {
 
                 Behavior on scale {
                     NumberAnimation {
-                        duration: Constants.animFast + 30
+                        duration: Math.round(180 * Constants.durationFactor)
                         easing.type: Easing.OutCubic
                         onRunningChanged: {
                             if (!running && root.isClearingAll) {

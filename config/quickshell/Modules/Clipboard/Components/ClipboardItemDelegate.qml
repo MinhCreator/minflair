@@ -145,7 +145,7 @@ Item {
 
     Behavior on height {
         NumberAnimation {
-            duration: Constants.animFast + 30
+            duration: Math.round(180 * Constants.durationFactor)
             easing.type: Easing.InOutCubic
             onRunningChanged: {
                 if (!running && delegateRoot.isDeletingAnim)

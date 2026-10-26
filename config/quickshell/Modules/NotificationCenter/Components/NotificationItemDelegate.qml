@@ -201,7 +201,7 @@ Rectangle {
 
     Behavior on height {
         NumberAnimation {
-            duration: delegateRoot.isDeletingAnim ? 180 : Constants.animNormal
+            duration: delegateRoot.isDeletingAnim ? Math.round(180 * Constants.durationFactor) : Constants.animNormal
             easing.type: delegateRoot.isDeletingAnim ? Easing.InOutCubic : Easing.OutQuint
             onRunningChanged: {
                 if (!running && delegateRoot.isDeletingAnim) {

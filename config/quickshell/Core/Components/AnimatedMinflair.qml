@@ -119,7 +119,7 @@ Item {
             }
 
             PauseAnimation {
-                duration: Math.max(0, Constants.animNormal - 50)
+                duration: Math.round(200 * Constants.durationFactor)
             }
 
             ParallelAnimation {
@@ -128,7 +128,7 @@ Item {
                         target: mainStarShape
                         property: "scale"
                         to: 1
-                        duration: Constants.animExpressive + 400
+                        duration: Math.round(900 * Constants.durationFactor)
                         easing.type: Easing.OutBack
                         easing.overshoot: 1.2
                     }
@@ -137,7 +137,7 @@ Item {
                         target: mainStarShape
                         property: "rotation"
                         to: 0
-                        duration: Constants.animExpressive + 400
+                        duration: Math.round(900 * Constants.durationFactor)
                         easing.type: Easing.OutBack
                         easing.overshoot: 1.2
                     }
@@ -154,7 +154,7 @@ Item {
                             target: xStarShape
                             property: "scale"
                             to: 1
-                            duration: Constants.animExpressive + 400
+                            duration: Math.round(900 * Constants.durationFactor)
                             easing.type: Easing.OutBack
                             easing.overshoot: 1.2
                         }
@@ -163,7 +163,7 @@ Item {
                             target: xStarShape
                             property: "rotation"
                             to: 45
-                            duration: Constants.animExpressive + 400
+                            duration: Math.round(900 * Constants.durationFactor)
                             easing.type: Easing.OutBack
                             easing.overshoot: 1.2
                         }

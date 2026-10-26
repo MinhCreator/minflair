@@ -126,7 +126,7 @@ PanelWindow {
     Timer {
         id: closeDelayTimer
 
-        interval: HyprlandService.enableAnimations ? (root.isIsland ? (Constants.animNormal + 80) : (Constants.animSlow + 150)) : 10
+        interval: Constants.durationFactor > 0 ? (root.isIsland ? Constants.animSlow : Constants.animExpressive) : 10
         repeat: false
         onTriggered: {
             if (exclusive && AppState.isWidgetOpen(widgetId))

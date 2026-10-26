@@ -208,7 +208,7 @@ Item {
     Timer {
         id: deletingResetTimer
 
-        interval: Constants.animNormal * 2 + 50
+        interval: Math.round(550 * Constants.durationFactor)
         repeat: false
         onTriggered: root.isDeleting = false
     }

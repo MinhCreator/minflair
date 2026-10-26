@@ -35,7 +35,7 @@ Item {
     Timer {
         id: resetPageTimer
 
-        interval: Constants.animNormal + 50
+        interval: Math.round(300 * Constants.durationFactor)
         repeat: false
         onTriggered: {
             if (!root.quickSettingsOpen)

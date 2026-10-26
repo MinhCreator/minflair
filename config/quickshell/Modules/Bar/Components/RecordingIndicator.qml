@@ -124,18 +124,18 @@ Item {
 
                             NumberAnimation {
                                 to: 0.3
-                                duration: Constants.animFast + 50
+                                duration: Math.round(200 * Constants.durationFactor)
                                 easing.type: Easing.OutSine
                             }
 
                             NumberAnimation {
                                 to: 1
-                                duration: Constants.animFast + 50
+                                duration: Math.round(200 * Constants.durationFactor)
                                 easing.type: Easing.InSine
                             }
 
                             PauseAnimation {
-                                duration: Constants.animExpressive + 100
+                                duration: Math.round(600 * Constants.durationFactor)
                             }
 
                         }
