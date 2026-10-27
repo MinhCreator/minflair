@@ -4,7 +4,7 @@ pragma Singleton
 
 QtObject {
     // Single source of truth for the version shown in the UI (sidebar footer,
-    // Settings → System Info). Keep it in sync with CHANGELOG.md on every release.
+    // Settings → System Info). Keep it in sync with the release changelog.
     readonly property string appVersion: "2.1.0"
     property string fontFamily: SettingsService.fontFamily
     property int size3Xs: 2
@@ -21,6 +21,9 @@ QtObject {
     // Gaming bar surface height. The surface, its exclusive zone and the overlay
     // must always use the same value, so it lives here as a single source of truth.
     property int gamingBarHeight: size3Xl + 2
+    // Island idle pill height. The pills, the exclusive zone (bar surface) and
+    // the overlay's starting height must share this value or gaps appear.
+    property int islandBarHeight: size3Xl + size2Xs
     readonly property real durationFactor: (HyprlandService.enableAnimations && !DisplayProfileService.gameModeActive && SystemInfoService.powerProfile !== "power-saver") ? (1 / Math.max(0.1, HyprlandService.animationSpeedFactor)) : 0
     property int animUltraFast: Math.round(100 * durationFactor)
     property int animFast: Math.round(150 * durationFactor)

@@ -218,15 +218,21 @@ Item {
 
                         layer.effect: MultiEffect {
                             maskEnabled: true
+                            // Keep a real 0..1 alpha ramp so the antialiased
+                            // circle edge is not promoted to fully opaque.
+                            maskThresholdMin: 0.5
+                            maskSpreadAtMin: 1
 
                             maskSource: ShaderEffectSource {
                                 visible: false
                                 hideSource: true
+                                smooth: true
 
                                 sourceItem: Rectangle {
                                     width: avatarInner.width
                                     height: avatarInner.height
                                     radius: avatarInner.radius
+                                    antialiasing: true
                                     color: Theme.white
                                 }
 

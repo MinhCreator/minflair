@@ -36,7 +36,7 @@ QtObject {
             return Constants.gamingBarHeight;
 
         if (style === "island")
-            return 32;
+            return Constants.islandBarHeight;
 
         return 40; // convex
     }

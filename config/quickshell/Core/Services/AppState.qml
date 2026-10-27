@@ -15,7 +15,7 @@ Item {
     property var launcherApps: []
     property bool socketsCleaned: true
     property real islandWidth: 180
-    property real islandHeight: Constants.size3Xl
+    property real islandHeight: Constants.islandBarHeight
     property alias barIslandWidth: appState.islandWidth
     property alias barIslandHeight: appState.islandHeight
     property bool isIslandOpen: false

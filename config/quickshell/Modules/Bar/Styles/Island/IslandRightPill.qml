@@ -22,18 +22,20 @@ IslandBackground {
     property real trayWidth: 0
     property bool trayAvailable: false
     readonly property bool showTray: SettingsService.islandShowTray && trayAvailable
-    // Media block: artwork 20 + gap 6 + visualizer 14 (4 bars + 3 gaps).
+    // Media block: artwork 20 + gap 8 + visualizer 14 (4 bars + 3 gaps).
+    readonly property real artSize: Constants.sizeXl
+    readonly property real artGap: Constants.sizeXs
     readonly property real cavaWidth: Constants.sizeSm + Constants.size3Xs
-    readonly property real playingMediaW: Constants.sizeXl + Constants.sizeSm / 2 + cavaWidth
-    readonly property real pausedMediaW: Constants.sizeXl
-    readonly property real tuneMediaW: Constants.sizeLg
+    readonly property real playingMediaW: artSize + artGap + cavaWidth
+    readonly property real pausedMediaW: artSize
+    readonly property real tuneMediaW: artSize
     readonly property real mediaW: isMusicActive ? playingMediaW : (showMedia ? pausedMediaW : tuneMediaW)
     readonly property real sidePadding: Constants.sizeXs
     readonly property real targetIdleW: sidePadding * 2 + mediaW + (showTray ? (islandBar.idleSpacing + trayWidth) : 0)
     property real smoothIdleW: targetIdleW
     readonly property real idleW: smoothIdleW
-    readonly property real idleH: Constants.size3Xl
-    readonly property real idleR: Constants.sizeLg
+    readonly property real idleH: islandBar.idleHeight
+    readonly property real idleR: islandBar.idleRadius
     readonly property real panelW: isTarget ? islandComponents.getTargetWidth(islandBar.effectivePanel, rightLoader.item, 0) : idleW
     readonly property real panelH: isTarget ? islandComponents.getTargetHeight(islandBar.effectivePanel, rightLoader.item) : idleH
     readonly property real panelR: isTarget ? islandComponents.getTargetRadius(islandBar.effectivePanel) : idleR
@@ -75,6 +77,7 @@ IslandBackground {
                 id: mediaArt
 
                 Layout.alignment: Qt.AlignVCenter
+                artSize: root.artSize
                 implicitWidth: root.mediaW
                 implicitHeight: root.idleH
                 clickable: !islandBar.isOpen

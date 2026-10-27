@@ -62,6 +62,7 @@ Item {
 
                     anchors.fill: parent
                     radius: Constants.sizeLg
+                    antialiasing: true
                     visible: false
                 }
 
@@ -69,11 +70,16 @@ Item {
                     anchors.fill: parent
                     source: artImage
                     maskEnabled: true
+                    // Keep a real 0..1 alpha ramp so the antialiased rounded
+                    // corners are not promoted to fully opaque.
+                    maskThresholdMin: 0.5
+                    maskSpreadAtMin: 1
                     visible: artImage.status === Image.Ready && MprisService.activePlayer !== null
 
                     maskSource: ShaderEffectSource {
                         visible: false
                         hideSource: true
+                        smooth: true
                         sourceItem: artMask
                     }
 

@@ -9,6 +9,7 @@ Item {
     id: root
 
     property bool clickable: true
+    property real artSize: Constants.sizeXl
     readonly property bool hasPlayingMedia: MprisService.activePlayer !== null && (((MprisService.activePlayer.trackTitle || "").trim() !== "") || ((MprisService.activePlayer.trackArtist || "").trim() !== ""))
     readonly property bool showMedia: (SettingsService.islandRightMode === "music") || (SettingsService.islandRightMode === "auto" && hasPlayingMedia)
 
@@ -18,8 +19,8 @@ Item {
     Item {
         id: mediaArtBox
 
-        width: Constants.sizeXl
-        height: Constants.sizeXl
+        width: root.artSize
+        height: root.artSize
         anchors.left: parent.left
         anchors.verticalCenter: parent.verticalCenter
         visible: root.showMedia
@@ -50,6 +51,11 @@ Item {
             anchors.fill: parent
             source: artImage
             maskEnabled: true
+            // MultiEffect thresholds the mask alpha with smoothstep. With the
+            // default 0/0 the antialiased edge becomes fully opaque, so keep a
+            // real 0..1 ramp to preserve the circle's smooth border.
+            maskThresholdMin: 0.5
+            maskSpreadAtMin: 1
             visible: artImage.status === Image.Ready && (artImage.source + "").trim() !== ""
 
             maskSource: ShaderEffectSource {
@@ -77,8 +83,9 @@ Item {
         id: visualizerRow
 
         anchors.left: mediaArtBox.right
-        anchors.leftMargin: Constants.sizeSm / 2
+        anchors.leftMargin: Constants.sizeXs
         anchors.verticalCenter: parent.verticalCenter
+        maxBarHeight: Constants.sizeXl
         opacity: (root.showMedia && MprisService.isPlaying && root.width > 36) ? 1 : 0
         visible: opacity > 0.001
 

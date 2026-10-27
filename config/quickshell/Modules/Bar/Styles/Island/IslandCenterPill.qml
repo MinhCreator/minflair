@@ -37,8 +37,8 @@ IslandBackground {
     readonly property real notifH: notifLayer.notifH
     readonly property real notifR: Constants.sizeXl
     readonly property real idleW: singlePill ? (idleRowWidth + Constants.sizeXl) : (clockContent.implicitWidth + Constants.sizeXl)
-    readonly property real idleH: Constants.size3Xl
-    readonly property real idleR: Constants.sizeLg
+    readonly property real idleH: islandBar.idleHeight
+    readonly property real idleR: islandBar.idleRadius
     property real smoothIdleW: idleW
     readonly property real panelW: isTarget ? islandComponents.getTargetWidth(islandBar.effectivePanel, centerLoader.item, 0) : smoothIdleW
     readonly property real panelH: isTarget ? islandComponents.getTargetHeight(islandBar.effectivePanel, centerLoader.item) : idleH

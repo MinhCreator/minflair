@@ -134,11 +134,16 @@ Card {
                         anchors.fill: parent
                         source: userImage
                         maskEnabled: true
+                        // Keep a real 0..1 alpha ramp so the antialiased circle
+                        // edge is not promoted to fully opaque by MultiEffect.
+                        maskThresholdMin: 0.5
+                        maskSpreadAtMin: 1
                         visible: userImage.status === Image.Ready
 
                         maskSource: ShaderEffectSource {
                             visible: false
                             hideSource: true
+                            smooth: true
                             sourceItem: mask
                         }
 

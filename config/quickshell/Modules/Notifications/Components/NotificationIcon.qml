@@ -75,15 +75,21 @@ Item {
 
             layer.effect: MultiEffect {
                 maskEnabled: true
+                // Keep a real 0..1 alpha ramp so the antialiased rounded
+                // corners are not promoted to fully opaque.
+                maskThresholdMin: 0.5
+                maskSpreadAtMin: 1
 
                 maskSource: ShaderEffectSource {
                     visible: false
                     hideSource: true
+                    smooth: true
 
                     sourceItem: Rectangle {
                         width: root.width > 0 ? root.width : root.iconSize
                         height: root.height > 0 ? root.height : root.iconSize
                         radius: Constants.sizeXs
+                        antialiasing: true
                         color: Theme.white
                     }
 

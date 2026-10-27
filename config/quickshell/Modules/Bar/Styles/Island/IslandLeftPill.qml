@@ -16,14 +16,14 @@ IslandBackground {
     readonly property bool isHovered: leftHover.hovered && !islandBar.isOpen && openProgress === 0
     readonly property bool isTranslated: isHovered || isTarget || openProgress > 0
     readonly property bool showWorkspaces: SettingsService.islandShowWorkspaces
-    readonly property real logoGlyphW: Constants.sizeXl
+    readonly property real logoGlyphW: islandBar.idleGlyph
     readonly property real sidePadding: Constants.sizeXs
     property real workspacesWidth: 0
-    readonly property real targetIdleW: showWorkspaces ? (sidePadding * 2 + logoGlyphW + islandBar.idleSpacing + workspacesWidth) : Constants.size3Xl
+    readonly property real targetIdleW: showWorkspaces ? (sidePadding * 2 + logoGlyphW + islandBar.idleSpacing + workspacesWidth) : islandBar.idleHeight
     property real smoothIdleW: targetIdleW
     readonly property real idleW: smoothIdleW
-    readonly property real idleH: Constants.size3Xl
-    readonly property real idleR: Constants.sizeLg
+    readonly property real idleH: islandBar.idleHeight
+    readonly property real idleR: islandBar.idleRadius
     readonly property real panelW: isTarget ? islandComponents.getTargetWidth("dashboard", leftLoader.item, 0) : idleW
     readonly property real panelH: isTarget ? islandComponents.getTargetHeight("dashboard", leftLoader.item) : idleH
     readonly property real panelR: isTarget ? islandComponents.getTargetRadius("dashboard") : idleR

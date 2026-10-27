@@ -83,6 +83,11 @@ Item {
     readonly property int idleSpacing: 5
     readonly property int pillGap: 10
     readonly property int edgeMargin: 16
+    // Shared idle geometry so every pill keeps the same height, radius and glyph scale.
+    // 36px keeps the pills compact without shrinking the artwork.
+    readonly property real idleHeight: Constants.islandBarHeight
+    readonly property real idleRadius: idleHeight / 2
+    readonly property real idleGlyph: Constants.sizeXl
 
     function getTargetPill(panel) {
         if (singlePill)
@@ -119,8 +124,8 @@ Item {
         if (!isOccupied && totalIdleWidth > 0) {
             AppState.barIslandWidth = totalIdleWidth;
             AppState.islandWidth = totalIdleWidth;
-            AppState.barIslandHeight = Constants.size3Xl;
-            AppState.islandHeight = Constants.size3Xl;
+            AppState.barIslandHeight = idleHeight;
+            AppState.islandHeight = idleHeight;
         }
     }
 

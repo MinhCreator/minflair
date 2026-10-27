@@ -88,15 +88,21 @@ Item {
 
             layer.effect: MultiEffect {
                 maskEnabled: true
+                // Keep a real 0..1 alpha ramp so the antialiased rounded
+                // corners are not promoted to fully opaque.
+                maskThresholdMin: 0.5
+                maskSpreadAtMin: 1
 
                 maskSource: ShaderEffectSource {
                     visible: false
                     hideSource: true
+                    smooth: true
 
                     sourceItem: Rectangle {
                         width: imageMaskContainer.width
                         height: imageMaskContainer.height
                         radius: Math.max(0, Constants.sizeLg - cardBorder.border.width)
+                        antialiasing: true
                         color: Theme.white
                     }
 
