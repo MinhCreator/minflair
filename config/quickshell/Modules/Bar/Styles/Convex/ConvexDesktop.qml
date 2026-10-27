@@ -15,7 +15,11 @@ PanelWindow {
     required property var notificationService
     property bool isShellReady: false
     property string activeBarStyle: "convex"
-    readonly property bool isConvexMode: SettingsService.barConvexMode && !DisplayProfileService.gameModeActive
+    // The cached settings are read asynchronously, so barStyle still holds its
+    // "convex" default for the first frames. Require settingsLoaded so the
+    // convex surface (content and mask) never flashes before the saved style
+    // is known.
+    readonly property bool isConvexMode: SettingsService.settingsLoaded && SettingsService.barConvexMode && !DisplayProfileService.gameModeActive
     readonly property bool isExiting: !isConvexMode
     property int barHeight: BarStyleConfig.barHeight("convex")
     property real animatedBarHeight: barHeight
