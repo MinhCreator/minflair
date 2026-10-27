@@ -62,7 +62,7 @@ ColumnLayout {
                 ThemedText {
                     visible: root.subtitle !== ""
                     text: root.subtitle
-                    customSize: 11
+                    customSize: Constants.sizeXs + 2
                     color: Theme.muted
                     elide: Text.ElideRight
                     Layout.fillWidth: true

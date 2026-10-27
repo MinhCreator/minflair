@@ -127,7 +127,7 @@ Rectangle {
 
                     ThemedText {
                         text: "PAIRED DEVICES"
-                        customSize: 10
+                        customSize: Constants.sizeXs + 2
                         font.weight: Font.Bold
                         font.letterSpacing: 0.8
                         color: Theme.muted
@@ -172,7 +172,7 @@ Rectangle {
 
                     ThemedText {
                         text: "AVAILABLE DEVICES"
-                        customSize: 10
+                        customSize: Constants.sizeXs + 2
                         font.weight: Font.Bold
                         font.letterSpacing: 0.8
                         color: Theme.muted

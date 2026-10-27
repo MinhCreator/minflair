@@ -95,7 +95,7 @@ Rectangle {
                 anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter
-                spacing: 1
+                spacing: Constants.size3Xs
 
                 ThemedText {
                     text: root.label

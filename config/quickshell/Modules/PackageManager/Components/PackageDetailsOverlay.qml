@@ -92,7 +92,7 @@ Rectangle {
                     id: backRow
 
                     anchors.centerIn: parent
-                    spacing: 6
+                    spacing: Constants.sizeXs
 
                     SvgIcon {
                         icon: "chevron-left"
@@ -227,7 +227,7 @@ Rectangle {
                                         text: "ABOUT"
                                         font.bold: true
                                         font.letterSpacing: 0.8
-                                        customSize: 10
+                                        customSize: Constants.sizeXs + 2
                                         color: Theme.muted
                                     }
 

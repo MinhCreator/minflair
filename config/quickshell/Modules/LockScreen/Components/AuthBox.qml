@@ -126,7 +126,7 @@ Item {
 
         Rectangle {
             anchors.fill: parent
-            anchors.margins: 1
+            anchors.margins: Constants.size3Xs
             radius: parent.radius
             color: Theme.bgSecondary
         }
@@ -262,7 +262,7 @@ Item {
 
                 ThemedText {
                     text: "@" + (SystemStats.hostname || "arch")
-                    customSize: 11
+                    customSize: Constants.sizeXs + 3
                     color: Theme.muted
                 }
 
@@ -311,7 +311,7 @@ Item {
 
                     Row {
                         anchors.verticalCenter: parent.verticalCenter
-                        spacing: 6
+                        spacing: Constants.sizeXs - 2
                         visible: passwordInput.text.length === 0 && !rootBox.authenticating
 
                         Rectangle {
@@ -508,7 +508,7 @@ Item {
         ThemedText {
             Layout.alignment: Qt.AlignHCenter
             text: rootBox.authFailed ? "Incorrect password. Please try again." : (rootBox.authenticating ? "Verifying credentials..." : "Press Enter to unlock • Esc to clear")
-            customSize: 11
+            customSize: Constants.sizeXs + 3
             color: rootBox.authFailed ? Theme.accentComplementary : Theme.muted
             font.bold: rootBox.authFailed
 

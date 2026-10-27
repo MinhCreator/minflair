@@ -78,7 +78,7 @@ Card {
                 ThemedText {
                     text: heroRoot.pkgName
                     font.bold: true
-                    customSize: 22
+                    customSize: Constants.size2Xl
                     color: Theme.fg
                 }
 
@@ -120,7 +120,7 @@ Card {
                         id: statusLayout
 
                         anchors.centerIn: parent
-                        spacing: 5
+                        spacing: Constants.size2Xs
 
                         Rectangle {
                             width: 6

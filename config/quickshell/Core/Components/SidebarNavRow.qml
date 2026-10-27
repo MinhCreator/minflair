@@ -71,7 +71,7 @@ Rectangle {
 
                 anchors.centerIn: parent
                 text: rowRoot.statusText
-                customSize: 10
+                customSize: Constants.sizeXs + 2
                 font.weight: rowRoot.isActive ? Font.Bold : Font.Normal
                 color: rowRoot.isActive ? Theme.accent : Theme.muted
             }

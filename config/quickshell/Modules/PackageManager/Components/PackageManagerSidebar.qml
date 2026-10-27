@@ -14,7 +14,7 @@ AppSidebar {
 
     ThemedText {
         text: "MODES"
-        customSize: 10
+        customSize: Constants.sizeXs + 2
         font.weight: Font.Bold
         font.letterSpacing: 0.8
         color: Theme.muted
@@ -86,7 +86,7 @@ AppSidebar {
     ThemedText {
         visible: managerRoot.actionMode === "install"
         text: "FEATURED"
-        customSize: 10
+        customSize: Constants.sizeXs + 2
         font.weight: Font.Bold
         font.letterSpacing: 0.8
         color: Theme.muted

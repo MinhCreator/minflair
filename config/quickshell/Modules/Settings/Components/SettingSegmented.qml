@@ -109,7 +109,7 @@ SettingRowTemplate {
                             anchors.centerIn: parent
                             text: modelData.text
                             font.weight: isActive ? Font.Bold : Font.Normal
-                            customSize: 11
+                            customSize: Constants.sizeXs + 3
                             color: isActive ? Theme.fg : (mouseArea.containsMouse ? Theme.fg : Theme.muted)
 
                             Behavior on color {

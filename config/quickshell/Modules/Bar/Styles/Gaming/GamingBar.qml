@@ -55,7 +55,7 @@ Item {
                 id: badgeContent
 
                 anchors.centerIn: parent
-                spacing: 6
+                spacing: Constants.sizeXs
 
                 SvgIcon {
                     anchors.verticalCenter: parent.verticalCenter
@@ -69,7 +69,7 @@ Item {
                     anchors.verticalCenter: parent.verticalCenter
                     text: "GAMING"
                     font.bold: true
-                    customSize: 11
+                    customSize: Constants.sizeXs + 3
                     color: Theme.bg
                 }
 

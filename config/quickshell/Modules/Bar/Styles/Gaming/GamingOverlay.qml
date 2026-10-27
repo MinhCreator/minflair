@@ -265,7 +265,7 @@ PanelWindow {
             id: ccContent
 
             anchors.fill: parent
-            anchors.margins: 12
+            anchors.margins: Constants.sizeSm
             notificationService: root.notificationService
             widget: widgetProxy
         }
@@ -297,7 +297,7 @@ PanelWindow {
             id: ncContent
 
             anchors.fill: parent
-            anchors.margins: 12
+            anchors.margins: Constants.sizeSm
             notificationService: root.notificationService
             controlCenterOpen: true
         }
@@ -328,7 +328,7 @@ PanelWindow {
             id: dashboardContent
 
             anchors.fill: parent
-            anchors.margins: 12
+            anchors.margins: Constants.sizeSm
             widget: widgetProxy
         }
 
@@ -359,7 +359,7 @@ PanelWindow {
             id: musicContent
 
             anchors.fill: parent
-            anchors.margins: 12
+            anchors.margins: Constants.sizeSm
             widget: widgetProxy
         }
 
@@ -389,7 +389,7 @@ PanelWindow {
             id: calendarContent
 
             anchors.fill: parent
-            anchors.margins: 12
+            anchors.margins: Constants.sizeSm
             widget: widgetProxy
         }
 
@@ -449,7 +449,7 @@ PanelWindow {
             id: trayContent
 
             anchors.fill: parent
-            anchors.margins: 8
+            anchors.margins: Constants.sizeXs
             menuHandle: (root.isTray && root.activeTrayItem) ? root.activeTrayItem.menu : null
             title: root.activeTrayTitle
             onBackRequested: {

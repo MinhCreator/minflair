@@ -28,7 +28,7 @@ Item {
         }
 
         Row {
-            spacing: 5
+            spacing: Constants.size2Xs
             Layout.alignment: Qt.AlignVCenter
 
             Repeater {

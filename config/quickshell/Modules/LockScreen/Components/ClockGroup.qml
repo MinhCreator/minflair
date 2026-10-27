@@ -71,7 +71,7 @@ ColumnLayout {
         ThemedText {
             visible: SettingsService.clockSeconds
             text: Qt.formatTime(SystemInfoService.currentTime, ":ss")
-            customSize: 42
+            customSize: Constants.size4Xl
             font.weight: Font.Light
             color: Theme.muted
             Layout.alignment: Qt.AlignBaseline
@@ -80,7 +80,7 @@ ColumnLayout {
         ThemedText {
             visible: !SettingsService.clock24h
             text: SystemInfoService.currentTime.getHours() >= 12 ? "PM" : "AM"
-            customSize: 22
+            customSize: Constants.size2Xl
             font.weight: Font.Bold
             color: Theme.accent
             Layout.alignment: Qt.AlignBaseline
@@ -126,7 +126,7 @@ ColumnLayout {
 
             Rectangle {
                 anchors.fill: parent
-                anchors.margins: 1
+                anchors.margins: Constants.size3Xs
                 radius: parent.radius
                 color: Theme.bgSecondary
             }
@@ -156,7 +156,7 @@ ColumnLayout {
                         let title = (p.trackTitle || "").trim();
                         return artist ? (artist + " — " + title) : title;
                     }
-                    customSize: 11
+                    customSize: Constants.sizeSm
                     color: Theme.fg
                     elide: Text.ElideRight
                     Layout.maximumWidth: 340
@@ -177,7 +177,7 @@ ColumnLayout {
         ThemedText {
             Layout.alignment: Qt.AlignHCenter
             text: QuoteService.currentQuote.text ? ("“" + QuoteService.currentQuote.text + "”") : ""
-            customSize: 11
+            customSize: Constants.sizeXs + 3
             font.italic: true
             color: Theme.muted
             horizontalAlignment: Text.AlignHCenter
@@ -189,7 +189,7 @@ ColumnLayout {
             Layout.alignment: Qt.AlignHCenter
             visible: QuoteService.currentQuote.author !== ""
             text: QuoteService.currentQuote.author ? ("— " + QuoteService.currentQuote.author.toUpperCase()) : ""
-            customSize: 9
+            customSize: Constants.sizeXs
             font.letterSpacing: 1.5
             color: Theme.muted
             opacity: 0.7

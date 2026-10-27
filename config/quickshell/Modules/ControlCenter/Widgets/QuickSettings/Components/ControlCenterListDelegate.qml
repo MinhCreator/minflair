@@ -58,7 +58,7 @@ Rectangle {
         ColumnLayout {
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignVCenter
-            spacing: 1
+            spacing: Constants.size3Xs
 
             ThemedText {
                 text: root.titleText

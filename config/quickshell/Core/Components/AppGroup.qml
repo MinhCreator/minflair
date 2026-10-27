@@ -11,6 +11,9 @@ Card {
     property string icon: ""
     property string badge: ""
     property bool showDividers: true
+    // Vertical rhythm between the group's children. Groups that draw their own
+    // dividers can tighten it without changing the default spacing.
+    property int contentSpacing: Constants.size2Xl
     default property alias groupContent: contentLayout.data
 
     Layout.fillWidth: true
@@ -39,7 +42,7 @@ Card {
 
             ThemedText {
                 text: root.title.toUpperCase()
-                customSize: 10
+                customSize: Constants.sizeXs + 2
                 font.weight: Font.Bold
                 font.letterSpacing: 0.9
                 color: Theme.muted
@@ -49,7 +52,7 @@ Card {
             ThemedText {
                 visible: root.badge !== ""
                 text: root.badge
-                customSize: 10
+                customSize: Constants.sizeXs + 2
                 color: Theme.muted
             }
 
@@ -64,7 +67,7 @@ Card {
                 id: contentLayout
 
                 anchors.fill: parent
-                spacing: Constants.size2Xl
+                spacing: root.contentSpacing
             }
 
             Repeater {

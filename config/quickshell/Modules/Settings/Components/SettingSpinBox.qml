@@ -23,7 +23,7 @@ SettingRowTemplate {
 
     RowLayout {
         Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
-        spacing: 6
+        spacing: Constants.sizeXs
         opacity: root.enabled ? 1 : 0.5
 
         // Minus Button
@@ -102,7 +102,7 @@ SettingRowTemplate {
                 id: contentRow
 
                 anchors.centerIn: parent
-                spacing: 3
+                spacing: Constants.size2Xs
 
                 TextInput {
                     id: valueInput
@@ -153,7 +153,7 @@ SettingRowTemplate {
                     anchors.verticalCenter: parent.verticalCenter
                     text: root.suffix
                     color: Theme.muted
-                    customSize: 11
+                    customSize: Constants.sizeXs + 3
                     visible: root.suffix !== "" && (!root.allowOff || root.value > 0.001 || valueInput.activeFocus)
                 }
 

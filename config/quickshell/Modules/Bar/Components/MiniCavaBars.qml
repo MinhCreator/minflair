@@ -35,7 +35,7 @@ Row {
         return Math.round(maxVal * 0.7 + avg * 0.3);
     }
 
-    spacing: 2
+    spacing: Constants.size3Xs
     height: maxBarHeight
     width: implicitWidth
 

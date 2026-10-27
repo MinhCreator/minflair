@@ -44,6 +44,9 @@ AppContainer {
         title: "Keyboard Layouts"
         icon: "keyboard"
         showDividers: false
+        // Each row draws its own divider, so the gap between rows matches the
+        // gap around the divider instead of the default 24px rhythm.
+        contentSpacing: Constants.sizeSm
 
         Repeater {
             model: SettingsService.enabledKbLayouts

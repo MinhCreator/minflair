@@ -133,7 +133,7 @@ Item {
                 // Name, Repo, Version column
                 ColumnLayout {
                     Layout.fillWidth: true
-                    spacing: 3
+                    spacing: Constants.size2Xs
                     Layout.alignment: Qt.AlignTop
 
                     RowLayout {

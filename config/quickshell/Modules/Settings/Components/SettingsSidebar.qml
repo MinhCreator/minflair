@@ -19,7 +19,7 @@ AppSidebar {
     // Section 1: DESKTOP
     ThemedText {
         text: "DESKTOP"
-        customSize: 10
+        customSize: Constants.sizeXs + 2
         font.weight: Font.Bold
         font.letterSpacing: 0.8
         color: Theme.muted
@@ -116,7 +116,7 @@ AppSidebar {
     // Section 2: INPUT & HARDWARE
     ThemedText {
         text: "INPUT & HARDWARE"
-        customSize: 10
+        customSize: Constants.sizeXs + 2
         font.weight: Font.Bold
         font.letterSpacing: 0.8
         color: Theme.muted
@@ -162,7 +162,7 @@ AppSidebar {
     // Section 3: MANAGEMENT
     ThemedText {
         text: "MANAGEMENT"
-        customSize: 10
+        customSize: Constants.sizeXs + 2
         font.weight: Font.Bold
         font.letterSpacing: 0.8
         color: Theme.muted
@@ -191,7 +191,7 @@ AppSidebar {
     // Section 4: ABOUT
     ThemedText {
         text: "ABOUT"
-        customSize: 10
+        customSize: Constants.sizeXs + 2
         font.weight: Font.Bold
         font.letterSpacing: 0.8
         color: Theme.muted

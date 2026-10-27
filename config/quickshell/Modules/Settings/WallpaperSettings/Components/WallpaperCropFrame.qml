@@ -122,7 +122,7 @@ Item {
         Rectangle {
             anchors.top: parent.top
             anchors.left: parent.left
-            anchors.margins: 6
+            anchors.margins: Constants.sizeXs
             implicitHeight: 18
             implicitWidth: frameTagText.implicitWidth + 12
             radius: Constants.size2Xs

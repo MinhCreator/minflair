@@ -50,7 +50,7 @@ Card {
                 text: "RESOURCES"
                 font.bold: true
                 font.letterSpacing: 0.8
-                customSize: 10
+                customSize: Constants.sizeXs + 2
                 color: Theme.muted
             }
 
@@ -97,7 +97,7 @@ Card {
 
                 ColumnLayout {
                     Layout.fillWidth: true
-                    spacing: 1
+                    spacing: Constants.size3Xs
 
                     ThemedText {
                         text: "Project Website"
@@ -208,7 +208,7 @@ Card {
 
                 ColumnLayout {
                     Layout.fillWidth: true
-                    spacing: 1
+                    spacing: Constants.size3Xs
 
                     ThemedText {
                         text: "AUR Package Page"

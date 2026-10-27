@@ -39,7 +39,7 @@ Item {
 
             ThemedText {
                 text: root.description
-                customSize: 11
+                customSize: Constants.sizeXs + 3
                 color: Theme.muted
                 visible: root.description !== ""
             }

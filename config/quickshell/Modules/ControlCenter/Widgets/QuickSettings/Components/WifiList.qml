@@ -141,7 +141,7 @@ Rectangle {
 
                     ThemedText {
                         text: "SAVED NETWORKS"
-                        customSize: 10
+                        customSize: Constants.sizeXs + 2
                         font.weight: Font.Bold
                         font.letterSpacing: 0.8
                         color: Theme.muted
@@ -186,7 +186,7 @@ Rectangle {
 
                     ThemedText {
                         text: "AVAILABLE NETWORKS"
-                        customSize: 10
+                        customSize: Constants.sizeXs + 2
                         font.weight: Font.Bold
                         font.letterSpacing: 0.8
                         color: Theme.muted

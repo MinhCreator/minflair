@@ -44,13 +44,13 @@ AppContainer {
                 ThemedText {
                     text: root.username + "@" + root.hostname
                     font.weight: Font.Bold
-                    customSize: 15
+                    customSize: Constants.sizeMd
                     color: Theme.fg
                 }
 
                 ThemedText {
                     text: root.osName + (root.kernel !== "" ? (" (" + root.kernel + ")") : "")
-                    customSize: 11
+                    customSize: Constants.sizeSm
                     color: Theme.muted
                 }
 

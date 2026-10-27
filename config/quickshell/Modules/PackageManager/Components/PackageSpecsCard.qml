@@ -53,7 +53,7 @@ Card {
                 text: "SPECIFICATIONS"
                 font.bold: true
                 font.letterSpacing: 0.8
-                customSize: 10
+                customSize: Constants.sizeXs + 2
                 color: Theme.muted
             }
 
