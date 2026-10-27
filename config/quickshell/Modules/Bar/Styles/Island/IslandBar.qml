@@ -81,6 +81,8 @@ Item {
     readonly property real currentHeight: Math.max(leftPill.height + (leftPill.isTranslated ? 4 : 0), Math.max(centerPill.height + (centerPill.isTranslated ? 4 : 0), rightPill.height + (rightPill.isTranslated ? 4 : 0)))
     readonly property real totalIdleWidth: singlePill ? centerPill.width : ((leftPill && rightPill) ? Math.max(0, (rightPill.x + rightPill.width) - leftPill.x) : 260)
     readonly property int idleSpacing: 5
+    readonly property int pillGap: 10
+    readonly property int edgeMargin: 16
 
     function getTargetPill(panel) {
         if (singlePill)
@@ -117,8 +119,8 @@ Item {
         if (!isOccupied && totalIdleWidth > 0) {
             AppState.barIslandWidth = totalIdleWidth;
             AppState.islandWidth = totalIdleWidth;
-            AppState.barIslandHeight = 32;
-            AppState.islandHeight = 32;
+            AppState.barIslandHeight = Constants.size3Xl;
+            AppState.islandHeight = Constants.size3Xl;
         }
     }
 

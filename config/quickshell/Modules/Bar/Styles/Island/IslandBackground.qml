@@ -25,9 +25,6 @@ Item {
         radius: root.radius
         color: Theme.bg
         antialiasing: true
-        layer.enabled: true
-        layer.smooth: true
-        layer.samples: 4
 
         Behavior on color {
             ColorAnimation {

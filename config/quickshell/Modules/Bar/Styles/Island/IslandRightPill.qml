@@ -22,19 +22,14 @@ IslandBackground {
     property real trayWidth: 0
     property bool trayAvailable: false
     readonly property bool showTray: SettingsService.islandShowTray && trayAvailable
-    // Artwork 20 + gap 6 + cava bars 14 (no internal padding, leftInset 0)
-    readonly property real playingMediaW: Constants.sizeXl + Constants.sizeSm / 2 + 14
-    readonly property real mediaW: {
-        if (isMusicActive)
-            return showTray ? playingMediaW : Constants.size5Xl + 10;
-
-        if (showTray && !showMedia)
-            return Constants.sizeLg;
-
-        return Constants.size3Xl;
-    }
+    // Media block: artwork 20 + gap 6 + visualizer 14 (4 bars + 3 gaps).
+    readonly property real cavaWidth: Constants.sizeSm + Constants.size3Xs
+    readonly property real playingMediaW: Constants.sizeXl + Constants.sizeSm / 2 + cavaWidth
+    readonly property real pausedMediaW: Constants.sizeXl
+    readonly property real tuneMediaW: Constants.sizeLg
+    readonly property real mediaW: isMusicActive ? playingMediaW : (showMedia ? pausedMediaW : tuneMediaW)
     readonly property real sidePadding: Constants.sizeXs
-    readonly property real targetIdleW: showTray ? (sidePadding * 2 + mediaW + islandBar.idleSpacing + trayWidth) : mediaW
+    readonly property real targetIdleW: sidePadding * 2 + mediaW + (showTray ? (islandBar.idleSpacing + trayWidth) : 0)
     property real smoothIdleW: targetIdleW
     readonly property real idleW: smoothIdleW
     readonly property real idleH: Constants.size3Xl
@@ -45,7 +40,7 @@ IslandBackground {
     readonly property alias activeItem: rightLoader.item
 
     z: isTarget ? 10 : 1
-    x: Math.min(islandContainer.width - width - 16, centerPill.x + centerPill.width + 10)
+    x: Math.min(islandContainer.width - width - islandBar.edgeMargin, Math.round(centerPill.x + centerPill.width + islandBar.pillGap))
     y: 0
     width: idleW + (panelW - idleW) * openProgress
     height: idleH + (panelH - idleH) * openProgress
@@ -82,7 +77,6 @@ IslandBackground {
                 Layout.alignment: Qt.AlignVCenter
                 implicitWidth: root.mediaW
                 implicitHeight: root.idleH
-                leftInset: (root.isMusicActive && root.showTray) ? 0 : (Constants.sizeSm / 2)
                 clickable: !islandBar.isOpen
             }
 

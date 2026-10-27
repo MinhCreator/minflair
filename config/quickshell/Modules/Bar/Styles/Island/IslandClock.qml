@@ -19,7 +19,7 @@ Item {
         id: clockRow
 
         anchors.centerIn: parent
-        spacing: RecorderService.running ? 8 : 0
+        spacing: RecorderService.running ? Constants.sizeXs : 0
 
         Item {
             id: clockBox

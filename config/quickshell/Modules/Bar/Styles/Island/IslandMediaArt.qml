@@ -9,7 +9,6 @@ Item {
     id: root
 
     property bool clickable: true
-    property int leftInset: Constants.sizeSm / 2
     readonly property bool hasPlayingMedia: MprisService.activePlayer !== null && (((MprisService.activePlayer.trackTitle || "").trim() !== "") || ((MprisService.activePlayer.trackArtist || "").trim() !== ""))
     readonly property bool showMedia: (SettingsService.islandRightMode === "music") || (SettingsService.islandRightMode === "auto" && hasPlayingMedia)
 
@@ -22,7 +21,6 @@ Item {
         width: Constants.sizeXl
         height: Constants.sizeXl
         anchors.left: parent.left
-        anchors.leftMargin: root.leftInset
         anchors.verticalCenter: parent.verticalCenter
         visible: root.showMedia
 
@@ -37,11 +35,14 @@ Item {
             visible: false
         }
 
+        // Rendered at 4x so the circular mask is not limited to 20 device pixels.
         Rectangle {
             id: artMask
 
-            anchors.fill: parent
+            width: mediaArtBox.width * 4
+            height: mediaArtBox.height * 4
             radius: width / 2
+            antialiasing: true
             visible: false
         }
 
@@ -54,6 +55,7 @@ Item {
             maskSource: ShaderEffectSource {
                 visible: false
                 hideSource: true
+                smooth: true
                 sourceItem: artMask
             }
 
@@ -75,7 +77,7 @@ Item {
         id: visualizerRow
 
         anchors.left: mediaArtBox.right
-        anchors.leftMargin: 6
+        anchors.leftMargin: Constants.sizeSm / 2
         anchors.verticalCenter: parent.verticalCenter
         opacity: (root.showMedia && MprisService.isPlaying && root.width > 36) ? 1 : 0
         visible: opacity > 0.001

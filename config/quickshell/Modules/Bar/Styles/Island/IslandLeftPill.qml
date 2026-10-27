@@ -30,7 +30,7 @@ IslandBackground {
     readonly property alias activeItem: leftLoader.item
 
     z: isTarget ? 10 : 1
-    x: Math.max(16, centerPill.x - 10 - width)
+    x: Math.max(islandBar.edgeMargin, Math.round(centerPill.x - islandBar.pillGap - width))
     y: 0
     width: idleW + (panelW - idleW) * openProgress
     height: idleH + (panelH - idleH) * openProgress

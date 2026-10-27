@@ -36,7 +36,7 @@ IslandBackground {
     readonly property real notifW: notifLayer.notifW
     readonly property real notifH: notifLayer.notifH
     readonly property real notifR: Constants.sizeXl
-    readonly property real idleW: singlePill ? (idleRowWidth + 20) : (clockContent.implicitWidth + 20)
+    readonly property real idleW: singlePill ? (idleRowWidth + Constants.sizeXl) : (clockContent.implicitWidth + Constants.sizeXl)
     readonly property real idleH: Constants.size3Xl
     readonly property real idleR: Constants.sizeLg
     property real smoothIdleW: idleW
