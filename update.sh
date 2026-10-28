@@ -133,7 +133,9 @@ if [ -n "$HYPRLAND_INSTANCE_SIGNATURE" ]; then
   hyprctl reload || warn "Could not reload Hyprland."
   killall qs 2>/dev/null || true
   sleep 0.5
-  hyprctl dispatch exec qs || warn "Could not restart Quickshell. Run 'qs' manually."
+  # Hyprland 0.55+ uses Lua config: dispatch expects a Lua expression.
+  hyprctl dispatch 'hl.dsp.exec_cmd("qs")' ||
+    warn "Could not restart Quickshell. Run 'qs' manually."
 else
   warn "Hyprland session not detected; restart Quickshell manually."
 fi
