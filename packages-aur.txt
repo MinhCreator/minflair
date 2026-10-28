@@ -1,0 +1,6 @@
+bibata-cursor-theme-bin
+fzf-tab-git
+quickshell
+tela-circle-icon-theme-dracula-git
+xxhash
+otf-geist

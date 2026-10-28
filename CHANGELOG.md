@@ -47,6 +47,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added global window rule `suppressevent maximize, class:.*` in Hyprland configuration to eliminate unwanted window maximize events.
   - Added full-tile click interaction, hover animations, and improved click handling for inactive tiles in `QuickSettingsTile`.
   - Unified gaming bar dimensions through a shared `gamingBarHeight` constant and added the app version to Settings → System Information.
+- **Configuration Update Script (`update.sh`)**:
+  - New updater for existing installations: backs up replaced files to `~/.dotfiles_backup/<timestamp>/`, syncs `config/` and `home/` (preserving Zsh history), installs new dependencies, refreshes the `minflair-sddm` theme without root-owned Git repositories, and reloads Hyprland and Quickshell.
 
 ### Changed
 
@@ -82,6 +84,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Kitty Configuration**:
   - Enabled split layouts with automatic split axis, added window navigation mappings, reduced font size to 11, and adapted window-management shortcuts.
   - Theme applier now generates a distinct ANSI palette from the accent color instead of reusing accent shades.
+- **Shared Dependency Lists**:
+  - Moved official and AUR packages to `packages.txt` and `packages-aur.txt`, shared by `install.sh` and `update.sh` so updates stay in sync.
 - **Dependencies (`install.sh`)**:
   - Added official packages `sddm`, `qt5-quickcontrols2`, `qt5-graphicaleffects`, and `qt5-svg`.
   - Replaced AUR package `sddm-theme-tokyo-night-git` with direct Git repository installation and updates for `minflair-sddm`.

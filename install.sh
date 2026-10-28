@@ -47,25 +47,7 @@ fi
 
 # ── 2. official dependencies ──────────────────────────────────────────────────
 log "Installing dependencies from official repositories..."
-dependencies=(
-  hyprland kitty openssh polkit-kde-agent qt5-wayland qt6-wayland
-  smartmontools uwsm vim wget wireless_tools xdg-desktop-portal-hyprland
-  xdg-utils bat bc btop cava eza fd fzf gnome-calculator gnome-font-viewer
-  gnome-disk-utility gvfs gvfs-mtp highlight hypridle hyprpicker
-  hyprsunset imagemagick inetutils iwd jq lazygit loupe nautilus network-manager-applet
-  networkmanager noto-fonts-emoji nwg-look openssl pacman-contrib pamixer pavucontrol
-  pipewire pipewire-alsa pipewire-audio pipewire-pulse python-gobject python-pygments
-  python-pip rfkill ripgrep starship ttf-cascadia-code-nerd ttf-jetbrains-mono-nerd
-  tumbler unzip upower wireplumber wl-clipboard wlsunset libmtp
-  xclip xdg-desktop-portal-gtk zsh zsh-autosuggestions zsh-history-substring-search
-  zsh-syntax-highlighting brightnessctl blueman bluez bluez-utils grim slurp cliphist
-  fastfetch neovim curl unrar socat qt6-imageformats mpv fnm polkit-gnome ntfs-3g libnotify
-  gnome-keyring libsecret awww playerctl ffmpeg exfatprogs dosfstools gvfs-afc power-profiles-daemon
-  sof-firmware gamemode python-pam less qt5ct qt6ct papirus-icon-theme wf-recorder
-  tesseract tesseract-data-eng tesseract-data-spa tree-sitter-cli
-  noto-fonts ttf-liberation ttf-roboto zoxide
-  sddm qt5-quickcontrols2 qt5-graphicaleffects qt5-svg
-)
+mapfile -t dependencies < <(grep -vE '^\s*(#|$)' "$REPO_DIR/packages.txt")
 
 sudo pacman -S --needed --noconfirm "${dependencies[@]}" ||
   warn "Some official packages could not be installed (check the messages above)."
@@ -73,14 +55,7 @@ ok "Official dependencies processed."
 
 # ── 3. AUR dependencies ───────────────────────────────────────────────────────
 log "Installing AUR dependencies..."
-aur_dependencies=(
-  bibata-cursor-theme-bin
-  fzf-tab-git
-  quickshell
-  tela-circle-icon-theme-dracula-git
-  xxhash
-  otf-geist
-)
+mapfile -t aur_dependencies < <(grep -vE '^\s*(#|$)' "$REPO_DIR/packages-aur.txt")
 
 yay -S --needed --noconfirm "${aur_dependencies[@]}" ||
   warn "Some AUR packages could not be installed (check the messages above)."

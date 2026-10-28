@@ -60,6 +60,46 @@ chmod +x install.sh
 
 ---
 
+## 🔄 Updating
+
+Already using Minflair? Pull the latest changes and run the update script:
+
+```bash
+cd ~/.dotfiles
+git pull
+./update.sh
+```
+
+`update.sh` will:
+
+- Back up the configuration it is about to replace to `~/.dotfiles_backup/<timestamp>/`.
+- Copy the updated `config/` and `home/` files, keeping your Zsh history.
+- Install any new official and AUR dependencies listed in `packages.txt` and `packages-aur.txt`.
+- Refresh the `minflair-sddm` login theme without requiring `git` as root.
+- Reapply the active theme and reload Hyprland and Quickshell.
+
+> [!NOTE]
+> The update overwrites configuration files with the repository versions. Your previous files are kept in the backup directory. To restore them:
+>
+> ```bash
+> cp -a ~/.dotfiles_backup/<timestamp>/config/. ~/.config/
+> cp -a ~/.dotfiles_backup/<timestamp>/home/. ~/
+> ```
+>
+> You can preview the SDDM theme without logging out:
+>
+> ```bash
+> sddm-greeter --test-mode --theme /usr/share/sddm/themes/minflair-sddm
+> ```
+>
+> To test local theme changes without pushing them first:
+>
+> ```bash
+> SDDM_THEME_SRC=~/Projects/tokyo-night-sddm ./update.sh
+> ```
+
+---
+
 ## 🔧 Post-Installation Setup
 
 ### 1. Reboot
