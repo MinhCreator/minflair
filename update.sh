@@ -99,15 +99,8 @@ if command -v sddm >/dev/null 2>&1; then
   TMP_DIR="$(mktemp -d)"
   trap 'rm -rf "$TMP_DIR"' EXIT
 
-  if [ -n "${SDDM_THEME_SRC:-}" ]; then
-    [ -d "$SDDM_THEME_SRC" ] || error "SDDM_THEME_SRC does not exist: $SDDM_THEME_SRC"
-    log "Using local SDDM theme source: $SDDM_THEME_SRC"
-    mkdir -p "$TMP_DIR/theme"
-    cp -a "$SDDM_THEME_SRC/." "$TMP_DIR/theme/"
-  else
-    git clone --depth 1 https://github.com/t4lentles5/tokyo-night-sddm.git "$TMP_DIR/theme" ||
-      error "Failed to clone the SDDM theme."
-  fi
+  git clone --depth 1 https://github.com/t4lentles5/tokyo-night-sddm.git "$TMP_DIR/theme" ||
+    error "Failed to clone the SDDM theme."
 
   rm -rf "$TMP_DIR/theme/.git"
   sudo mkdir -p "$SDDM_THEME_DIR"

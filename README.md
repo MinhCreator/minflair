@@ -91,12 +91,6 @@ git pull
 > ```bash
 > sddm-greeter --test-mode --theme /usr/share/sddm/themes/minflair-sddm
 > ```
->
-> To test local theme changes without pushing them first:
->
-> ```bash
-> SDDM_THEME_SRC=~/Projects/tokyo-night-sddm ./update.sh
-> ```
 
 ---
 
