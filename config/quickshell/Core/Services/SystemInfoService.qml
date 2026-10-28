@@ -198,7 +198,10 @@ Item {
     Timer {
         id: batteryTimer
 
-        interval: systemInfoService.performanceInterval
+        // powerUeventProc already refreshes the battery on every power_supply
+        // uevent, so this timer is only a slow safety net. Polling here at
+        // performanceInterval forked a shell script every second for nothing.
+        interval: 60000
         running: true
         repeat: true
         triggeredOnStart: true

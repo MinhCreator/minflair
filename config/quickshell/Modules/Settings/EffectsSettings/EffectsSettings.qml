@@ -64,6 +64,7 @@ AppContainer {
             id: blurToggle
 
             label: "Enable Window & Panel Blur"
+            description: "Off by default: blurring the shell surfaces costs frame time on integrated GPUs"
             onCheckedChanged: {
                 if (checked !== HyprlandService.hyprBlur)
                     HyprlandService.hyprBlur = checked;

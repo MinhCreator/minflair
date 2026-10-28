@@ -22,7 +22,7 @@ Item {
     property int wpTransitionAngle: 30
     property string wpResizeMode: "crop"
     property string wpCropGravity: "center"
-    property bool hyprBlur: true
+    property bool hyprBlur: false
     property int hyprRounding: Constants.size3Xl
     property int hyprActiveOpacity: 100
     property int hyprInactiveOpacity: 100
