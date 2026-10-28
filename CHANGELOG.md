@@ -5,6 +5,129 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] - 2026-10-28
+
+### Added
+
+- **Unified Quickshell On-Screen Display (OSD) Engine (`OsdService`)**:
+  - Integrated a native, centralized OSD architecture via Quickshell IPC, supported across both **Convex** (`ConvexCenter`) and **Island** (`IslandCenterPill`) shell styles.
+  - Real-time animated OSD indicators for volume level, microphone mute/unmute, and display brightness.
+  - Native OSD status notifications for keyboard lock states (Caps Lock, Num Lock) with dedicated SVG icons, and touchpad toggle (`touchpad.sh`).
+  - Udev-based power event monitoring in `SystemInfoService` dispatching OSD notifications on AC charger connection/disconnection and battery status events.
+  - Screen capture feedback: `screenshot.sh` and `record.sh` now invoke Quickshell OSD via IPC instead of external `notify-send`.
+- **Dynamic SDDM Theming & Integration (`minflair-sddm`)**:
+  - Migrated SDDM login theme to custom fork [t4lentles5/tokyo-night-sddm](https://github.com/t4lentles5/tokyo-night-sddm) installed as `minflair-sddm`.
+  - Added dynamic SDDM theme applier (`Scripts/theme/theme_appliers/sddm.py`) integrated into `WallpaperManager` and `apply_theme.py`, synchronizing SDDM login background with the active wallpaper and theme colors in real time.
+  - Automated user avatar ACL permissions (`setfacl`) in `install.sh` so SDDM can display `~/.face` or `~/.face.icon` without home directory permission issues.
+- **Pomodoro Focus Timer (`PomodoroService`)**:
+  - New dedicated Pomodoro module (`Ctrl + Alt + T`) with configurable focus, short-break, and long-break durations, plus a "long break every N focus sessions" cycle setting.
+  - Auto-start for the next phase, desktop notifications, and sound cues when a phase ends.
+  - Persistent timer state in `~/.cache/quickshell/pomodoro_state.json` with daily completed-session tracking, progress ring, and phase chips.
+- **System Usage Monitor**:
+  - New modular System Usage module (`Ctrl + Alt + F`) with dedicated CPU, GPU, memory, and storage cards.
+  - Live CPU usage/temperature/frequency/cores, GPU usage/temperature/VRAM, RAM utilization, and per-disk storage breakdowns.
+  - Extended `get_processes.py` daemon providing structured JSON metrics, integrated into the Convex center panel, Island bar, and Gaming overlay.
+- **Unified Calendar Widget**:
+  - New `CalendarWidget` (`Ctrl + Alt + C`) shared between Convex and Island styles, opened directly from the bar clock.
+- **Smart Launcher**:
+  - Inline calculator powered by a new recursive-descent `MathEval` parser (no `eval`/`Function`), supporting arithmetic, parentheses, exponentiation, `sqrt`, and `pi`.
+  - Web search shortcuts through explicit prefixes (`g`, `yt`, `w`, `gh`, `ddg`) using a configurable default browser.
+  - Quick Minflair commands (`> settings`, `> keybinds`, `> packages`, `> pomodoro`) and a shell command runner for kitty.
+- **Notification Grouping & Management**:
+  - Notifications grouped by application with expandable stacks and per-group clear actions in the Notification Center.
+  - New `NotificationUtils` and `TimeUtils` helpers for grouping, relative timestamps, and notification removal.
+- **Island Bar Customization**:
+  - New settings to show/hide workspaces and the system tray in the Island bar.
+  - New "Single Island" mode that displays only the center pill.
+  - Configurable workspace count (1–20) for bar indicators.
+- **Obsidian Theme Synchronization**:
+  - New `theme_appliers/obsidian.py` that generates a Minflair CSS snippet in every detected vault and enables it automatically, keeping Obsidian in sync with the active palette.
+- **UI Animations & Window Rules**:
+  - Added smooth opacity fade animations to `AppWindow` during window presentation and dismissal.
+  - Added global window rule `suppressevent maximize, class:.*` in Hyprland configuration to eliminate unwanted window maximize events.
+  - Added full-tile click interaction, hover animations, and improved click handling for inactive tiles in `QuickSettingsTile`.
+  - Unified gaming bar dimensions through a shared `gamingBarHeight` constant and added the app version to Settings → System Information.
+
+### Changed
+
+- **Native PipeWire Audio Engine**:
+  - Refactored `AudioService` to connect directly to Quickshell's native PipeWire integration, replacing external `pamixer` and `pactl` process spawns for zero-overhead, lag-free audio control.
+- **Keyboard Layout Support & Synchronization**:
+  - Expanded keyboard layout support and synchronized active layout states between `HyprlandService` and the Settings panel (`InputAndClipboardSettings`).
+- **Slider Throttling & Debouncing**:
+  - Added debouncing and throttling to `ThemedSlider` and `BrightnessSlider` to prevent `brightnessctl` command flooding during rapid slider adjustments.
+- **Script Consolidation & Code Cleanups**:
+  - Consolidated standalone widget toggle scripts into a unified widget utility script.
+  - Reworked Minflair app scripts from `toggle_*` to `open_*` semantics and removed the legacy `.desktop` entries in favor of in-launcher quick commands.
+  - Replaced hardcoded black and white color values across UI components with dynamic `Theme` properties, including `Theme.bgTertiary` for package manager surfaces and theme-aware gradients.
+  - Refined sidebar navigation hover and active states with palette-aware color blending.
+  - Bound font family directly to `Constants.fontFamily` in `TypewriterText`.
+  - Standardized spacing, text sizes, and animation durations via `Constants` and `durationFactor` for consistent motion across the UI.
+- **Rendering Stack (`QtQuick.Effects`)**:
+  - Migrated all `Qt5Compat.GraphicalEffects` usages (icons, shadows, lock screen, media art, notifications, wallpaper cards) to native `QtQuick.Effects` (`MultiEffect`), reworking `RadialGlow` and removing the `qt6-5compat` dependency.
+- **Lock Screen Appearance**:
+  - Auth box and clock group now use translucent backgrounds with improved contrast against the active wallpaper; SDDM theme generation was aligned with the new lock screen styling.
+- **Island Bar Geometry**:
+  - Centralized idle pill geometry (`islandBarHeight`, `idleHeight`, `idleRadius`, `idleGlyph`, `edgeMargin`, `pillGap`) in `IslandBar` so pills, bar surface, exclusive zone, and the overlay start height always share the same metrics.
+  - Media artwork, visualizer bars, and tray spacing now derive from `Constants` instead of hardcoded pixel values, keeping the island layout consistent across scales.
+- **Game Mode & Bar Surfaces**:
+  - Reworked gaming bar/overlay surfaces to reserve exclusive zones only while gaming, added masks to avoid input capture, and prevented bar style switches from instantiating inactive styles.
+- **Blur Disabled by Default**:
+  - Window and panel blur now ships disabled (`userprefs.lua`, `HyprlandService.hyprBlur`) to save frame time on integrated GPUs; it can still be re-enabled from Settings → Effects, where the toggle now explains the performance trade-off.
+- **Settings Performance**:
+  - Increased the settings save debounce interval to 500 ms to reduce disk writes while adjusting controls.
+- **Command Execution Security**:
+  - Shell commands now receive arguments directly instead of interpolated command strings across audio, clipboard, Pomodoro, wallpaper, theme, and settings services.
+  - GitHub tokens are read from environment variables instead of being passed through process arguments.
+- **Kitty Configuration**:
+  - Enabled split layouts with automatic split axis, added window navigation mappings, reduced font size to 11, and adapted window-management shortcuts.
+  - Theme applier now generates a distinct ANSI palette from the accent color instead of reusing accent shades.
+- **Dependencies (`install.sh`)**:
+  - Added official packages `sddm`, `qt5-quickcontrols2`, `qt5-graphicaleffects`, and `qt5-svg`.
+  - Replaced AUR package `sddm-theme-tokyo-night-git` with direct Git repository installation and updates for `minflair-sddm`.
+  - Removed `qt6-5compat` and the legacy Quickshell `.desktop` installation step.
+
+### Fixed
+
+- **SDDM Wallpaper Extraction Memory Spikes**:
+  - Optimized image processing and downsampling in `theme_extractors/image_utils.py` to prevent memory spikes during high-resolution SDDM wallpaper extraction, with fallback handling.
+- **IPC Sockets & Overlay Focus**:
+  - Resolved stale IPC socket handling during Quickshell startup.
+  - Improved gaming overlay focus and event handling for cleaner input passthrough.
+- **Masked Image Antialiasing**:
+  - Preserved smooth mask edges on `MultiEffect`-clipped images by keeping a real 0..1 alpha ramp (`maskThresholdMin: 0.5`, `maskSpreadAtMin: 1`) and enabling `smooth` on mask sources, fixing jagged avatars, notification icons, wallpaper cards, and mini music artwork.
+- **Bar Style Switching Stability**:
+  - Prevented crashes and duplicated surfaces when switching between Convex, Island, and Gaming styles by gating inactive style loaders and unifying bar window lifecycle handling.
+- **Game Mode Surfaces**:
+  - Fixed overlapping bar surfaces and incorrect exclusive zones when entering or leaving Game Mode, including masks and visibility gating for hidden surfaces.
+- **Convex Surface Flashing**:
+  - `ConvexDesktop.isConvexMode` now requires `SettingsService.settingsLoaded`, preventing the Convex frame and mask from flashing on screen before the saved bar style has been read.
+- **Keyboard Lock Detection**:
+  - Caps Lock and Num Lock states are now read from `hyprctl devices` instead of sysfs, fixing unreliable OSD indicators.
+- **System Usage Animations**:
+  - Synchronized animation states in `SystemUsageCard` when disabled to prevent stale segment displays.
+- **Package Manager Contrast**:
+  - Updated package cards and overlays to use `Theme.bgTertiary` for consistent contrast across themes.
+- **Battery Polling Overhead**:
+  - `SystemInfoService`'s battery timer is now a 60 s safety net instead of polling at `performanceInterval`, since uevent monitoring already refreshes battery state on every change; this removes a shell script spawn every second.
+- **MathEval Parsing**:
+  - Fixed operator precedence, loop handling, and division/modulo-by-zero behavior in the launcher calculator.
+
+### Removed
+
+- **Legacy Floating Bar Style**:
+  - Removed deprecated `FloatingOverlayStyle.qml` and associated settings slots in favor of Convex and Island bar styles.
+  - Removed unused `BarCenterContent.qml` and `IslandContent.qml` bar components.
+- **Lock Screen Components & Unused Services**:
+  - Removed top-left and top-right component groups from `LockScreen.qml` for a cleaner, focused layout.
+  - Removed legacy `OsdProgressBar.qml`, superseded by the unified OSD engine.
+- **Legacy Desktop Entries & Scripts**:
+  - Removed the shipped `.desktop` entries for Settings, Keybinds, Package Manager, and Pomodoro; they are now launched from the smart launcher or via widgets.
+  - Removed the per-app `toggle_*` scripts and `toggle_widget.sh` in favor of unified `open_*` and `open_widget.sh` utilities.
+- **Deprecated Theming & Components**:
+  - Removed the unused `svg_assets.py` theme applier and its icon-recoloring pipeline.
+  - Removed unused `ClockContent.qml` in favor of the unified `CalendarWidget`.
+
 ## [2.0.1] - 2026-10-12
 
 ### Fixed
@@ -126,6 +249,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.3.1] - 2026-09-25
 
 ### Fixed
+
 - Fixed an issue where the battery icon would disappear on laptops where the battery is mapped to `BAT0` instead of `BAT1`.
 - Added universal ACPI battery auto-detection across `/sys/class/power_supply/` supporting multiple laptop vendors and non-standard battery names.
 - Prevented battery status `Unknown` from incorrectly hiding the battery widget when plugged in or fully charged.
