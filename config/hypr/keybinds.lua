@@ -160,7 +160,7 @@ hl.bind(mainMod .. " + G", hl.dsp.group.toggle())
 -- # Cycle Group Windows
 hl.bind(mainMod .. " + Tab", hl.dsp.group.next())
 -- # Lock / Unlock Group
-hl.bind(mainMod .. " + SHIFT + G", hl.dsp.group.lock("toggle"))
+hl.bind(mainMod .. " + SHIFT + G", hl.dsp.group.lock({ action = "toggle" }))
 
 -- ## Navigation
 
